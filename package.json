@@ -1,0 +1,32 @@
+{
+  "name": "ats-project",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-Powered Applicant Tracking System",
+  "scripts": {
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "lint": "cd frontend && npm run lint && cd ../backend && npm run lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.0",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.2.4"
+  },
+  "lint-staged": {
+    "frontend/src/**/*.{js,jsx}": [
+      "prettier --write",
+      "eslint --fix --no-warn-ignored"
+    ],
+    "backend/src/**/*.js": [
+      "prettier --write",
+      "eslint --fix --no-warn-ignored"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
+  }
+}

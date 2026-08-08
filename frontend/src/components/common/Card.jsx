@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { cn } from '@/utils';
+import useReducedMotion from '@/hooks/useReducedMotion';
 
 const Card = ({
   children,
@@ -9,6 +10,8 @@ const Card = ({
   onClick,
   ...props
 }) => {
+  const prefersReducedMotion = useReducedMotion();
+
   const paddings = {
     none: '',
     sm: 'p-4',
@@ -18,7 +21,7 @@ const Card = ({
 
   return (
     <motion.div
-      whileHover={hover ? { y: -2, transition: { duration: 0.2 } } : {}}
+      whileHover={hover && !prefersReducedMotion ? { y: -2, transition: { duration: 0.2 } } : {}}
       className={cn(
         'bg-surface border border-border rounded-[12px]',
         paddings[padding],

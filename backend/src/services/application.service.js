@@ -8,7 +8,7 @@ class ApplicationService {
     const { job: jobId, coverLetter } = applicationData;
 
     // Verify job exists and is open
-    const job = await Job.findById(jobId);
+    const job = await Job.findById(jobId).select('status').lean();
     if (!job) {
       throw ApiError.notFound('Job not found');
     }
@@ -17,7 +17,7 @@ class ApplicationService {
     }
 
     // Check for duplicate application
-    const existing = await Application.findOne({ job: jobId, applicant: applicantId });
+    const existing = await Application.findOne({ job: jobId, applicant: applicantId }).select('_id').lean();
     if (existing) {
       throw ApiError.conflict('You have already applied to this job');
     }
@@ -60,7 +60,8 @@ class ApplicationService {
         .populate('applicant', 'firstName lastName email')
         .sort('-createdAt')
         .skip(skip)
-        .limit(parseInt(limit)),
+        .limit(parseInt(limit))
+        .lean(),
       Application.countDocuments(filter),
     ]);
 

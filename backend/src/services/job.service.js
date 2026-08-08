@@ -20,7 +20,8 @@ class JobService {
         .populate('recruiter', 'firstName lastName email')
         .sort(sort)
         .skip(skip)
-        .limit(parseInt(limit)),
+        .limit(parseInt(limit))
+        .lean(),
       Job.countDocuments(filter),
     ]);
 
@@ -30,7 +31,9 @@ class JobService {
   }
 
   async getJobById(jobId) {
-    const job = await Job.findById(jobId).populate('recruiter', 'firstName lastName email');
+    const job = await Job.findById(jobId)
+      .populate('recruiter', 'firstName lastName email')
+      .lean();
     if (!job) {
       throw ApiError.notFound('Job not found');
     }
@@ -74,7 +77,7 @@ class JobService {
     if (status) filter.status = status;
 
     const [jobs, total] = await Promise.all([
-      Job.find(filter).sort('-createdAt').skip(skip).limit(parseInt(limit)),
+      Job.find(filter).sort('-createdAt').skip(skip).limit(parseInt(limit)).lean(),
       Job.countDocuments(filter),
     ]);
 

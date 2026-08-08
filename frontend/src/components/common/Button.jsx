@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/utils';
+import useReducedMotion from '@/hooks/useReducedMotion';
 
 const variants = {
   primary: 'bg-primary hover:bg-primary-light text-white shadow-lg shadow-primary/25',
@@ -34,11 +35,13 @@ const Button = forwardRef(
     },
     ref
   ) => {
+    const prefersReducedMotion = useReducedMotion();
+
     return (
       <motion.button
         ref={ref}
         type={type}
-        whileTap={{ scale: disabled || loading ? 1 : 0.97 }}
+        whileTap={disabled || loading || prefersReducedMotion ? {} : { scale: 0.97 }}
         className={cn(
           'inline-flex items-center justify-center gap-2 font-medium rounded-[12px] transition-all duration-200 cursor-pointer',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
@@ -58,6 +61,7 @@ const Button = forwardRef(
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <circle
                 className="opacity-25"
@@ -77,9 +81,9 @@ const Button = forwardRef(
           </>
         ) : (
           <>
-            {Icon && iconPosition === 'left' && <Icon className="w-4 h-4" />}
+            {Icon && iconPosition === 'left' && <Icon className="w-4 h-4" aria-hidden="true" />}
             {children}
-            {Icon && iconPosition === 'right' && <Icon className="w-4 h-4" />}
+            {Icon && iconPosition === 'right' && <Icon className="w-4 h-4" aria-hidden="true" />}
           </>
         )}
       </motion.button>

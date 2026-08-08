@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiXMark } from 'react-icons/hi2';
 import { cn } from '@/utils';
+import useReducedMotion from '@/hooks/useReducedMotion';
 
 const sizes = {
   sm: 'max-w-sm',
@@ -12,6 +13,8 @@ const sizes = {
 };
 
 const Modal = ({ isOpen, onClose, title, children, size = 'md', className = '' }) => {
+  const prefersReducedMotion = useReducedMotion();
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -29,25 +32,33 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md', className = '' }
     return () => window.removeEventListener('keydown', handleEsc);
   }, [isOpen, onClose]);
 
+  const overlayAnimation = prefersReducedMotion
+    ? { initial: { opacity: 1 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
+    : { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } };
+
+  const modalAnimation = prefersReducedMotion
+    ? { initial: { opacity: 1 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
+    : {
+        initial: { opacity: 0, scale: 0.95, y: 20 },
+        animate: { opacity: 1, scale: 1, y: 0 },
+        exit: { opacity: 0, scale: 0.95, y: 20 },
+        transition: { duration: 0.2 },
+      };
+
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby={title ? 'modal-title' : undefined}>
           {/* Overlay */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            {...overlayAnimation}
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={onClose}
           />
 
           {/* Modal */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ duration: 0.2 }}
+            {...modalAnimation}
             className={cn(
               'relative w-full bg-surface border border-border rounded-[16px] shadow-2xl',
               sizes[size],
@@ -57,7 +68,7 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md', className = '' }
             {/* Header */}
             {title && (
               <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-                <h2 className="text-lg font-semibold text-text">{title}</h2>
+                <h2 id="modal-title" className="text-lg font-semibold text-text">{title}</h2>
                 <button
                   onClick={onClose}
                   className="p-1 rounded-lg text-text-secondary hover:text-text hover:bg-border transition-colors"

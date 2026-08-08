@@ -3,10 +3,12 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import mongoSanitize from 'express-mongo-sanitize';
 
 import config from './config/index.js';
 import connectDB from './config/db.js';
 import { errorHandler, notFound } from './middlewares/errorHandler.js';
+import { apiLimiter } from './middlewares/rateLimiter.js';
 
 // Route imports
 import authRoutes from './routes/auth.routes.js';
@@ -38,6 +40,12 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Cookie parser
 app.use(cookieParser());
+
+// Sanitize data - prevent NoSQL injection
+app.use(mongoSanitize());
+
+// Rate limiting
+app.use('/api', apiLimiter);
 
 // Logging
 if (config.env === 'development') {
