@@ -1,12 +1,12 @@
-import { HiDocumentText, HiClipboardDocumentCheck, HiCalendar, HiEye } from 'react-icons/hi2';
+import { HiDocumentText, HiClock, HiCalendarDays, HiGift } from 'react-icons/hi2';
 import { useAuth } from '@/context/AuthContext';
 import { Card, PageHeader } from '@/components/common';
 
 const stats = [
   { label: 'Applications', value: '0', icon: HiDocumentText, color: 'text-primary' },
-  { label: 'Shortlisted', value: '0', icon: HiClipboardDocumentCheck, color: 'text-success' },
-  { label: 'Interviews', value: '0', icon: HiCalendar, color: 'text-warning' },
-  { label: 'Profile Views', value: '0', icon: HiEye, color: 'text-info' },
+  { label: 'Pending', value: '0', icon: HiClock, color: 'text-warning' },
+  { label: 'Interviews', value: '0', icon: HiCalendarDays, color: 'text-info' },
+  { label: 'Offers', value: '0', icon: HiGift, color: 'text-success' },
 ];
 
 const ApplicantDashboard = () => {
@@ -19,7 +19,6 @@ const ApplicantDashboard = () => {
         subtitle="Track your job applications and interviews"
       />
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {stats.map((stat) => (
           <Card key={stat.label} padding="md">
@@ -36,7 +35,6 @@ const ApplicantDashboard = () => {
         ))}
       </div>
 
-      {/* Content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <h3 className="text-lg font-semibold text-text mb-4">My Applications</h3>

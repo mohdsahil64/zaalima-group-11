@@ -20,9 +20,9 @@ router.get('/:id', getJob);
 
 // Protected routes (Recruiter only)
 router.use(protect);
-router.get('/recruiter/my-jobs', authorize('recruiter', 'admin'), getMyJobs);
-router.post('/', authorize('recruiter', 'admin'), createJobValidator, validate, createJob);
-router.put('/:id', authorize('recruiter', 'admin'), updateJobValidator, validate, updateJob);
-router.delete('/:id', authorize('recruiter', 'admin'), deleteJob);
+router.get('/recruiter/my-jobs', authorize('recruiter', 'super_admin'), getMyJobs);
+router.post('/', authorize('recruiter', 'super_admin'), createJobValidator, validate, createJob);
+router.put('/:id', authorize('recruiter', 'super_admin'), updateJobValidator, validate, updateJob);
+router.delete('/:id', authorize('recruiter', 'super_admin'), deleteJob);
 
 export default router;

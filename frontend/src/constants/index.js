@@ -2,7 +2,7 @@ export const APP_NAME = 'ATS';
 export const APP_DESCRIPTION = 'AI-Powered Applicant Tracking System';
 
 export const ROLES = {
-  ADMIN: 'admin',
+  SUPER_ADMIN: 'super_admin',
   RECRUITER: 'recruiter',
   APPLICANT: 'applicant',
 };

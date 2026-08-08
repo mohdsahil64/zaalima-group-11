@@ -24,7 +24,7 @@ const LoginPage = () => {
       const routes = {
         recruiter: '/recruiter/dashboard',
         applicant: '/applicant/dashboard',
-        admin: '/admin/dashboard',
+        super_admin: '/admin/dashboard',
       };
       navigate(routes[user.role] || '/');
     } catch (error) {

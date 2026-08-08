@@ -20,7 +20,7 @@ router.get('/', getApplications);
 router.post('/', authorize('applicant'), createApplicationValidator, validate, createApplication);
 router.put(
   '/:id/status',
-  authorize('recruiter', 'admin'),
+  authorize('recruiter', 'super_admin'),
   updateApplicationStatusValidator,
   validate,
   updateApplicationStatus

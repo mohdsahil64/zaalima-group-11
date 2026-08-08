@@ -19,7 +19,7 @@ const ProtectedLayout = ({ allowedRoles = [] }) => {
     const roleRoutes = {
       recruiter: '/recruiter/dashboard',
       applicant: '/applicant/dashboard',
-      admin: '/admin/dashboard',
+      super_admin: '/admin/dashboard',
     };
     return <Navigate to={roleRoutes[user?.role] || '/'} replace />;
   }

@@ -11,7 +11,7 @@ const PublicLayout = () => {
     const routes = {
       recruiter: '/recruiter/dashboard',
       applicant: '/applicant/dashboard',
-      admin: '/admin/dashboard',
+      super_admin: '/admin/dashboard',
     };
     return routes[user.role] || '/';
   };
