@@ -23,7 +23,7 @@ A production-ready, enterprise-grade Applicant Tracking System built with modern
 
 ```
 ats-project/
-├── client/                  # React Frontend
+├── frontend/                # React Frontend
 │   ├── src/
 │   │   ├── assets/         # Static assets
 │   │   ├── components/     # Reusable components
@@ -42,7 +42,7 @@ ats-project/
 │   │   ├── styles/         # Global styles
 │   │   └── types/          # Type definitions
 │   └── ...
-├── server/                  # Express Backend
+├── backend/                 # Express Backend
 │   ├── config/             # Configuration files
 │   ├── controllers/        # Route controllers
 │   ├── models/             # Mongoose models
@@ -73,43 +73,43 @@ cd ats-project
 
 2. Install backend dependencies
 ```bash
-cd server
+cd backend
 npm install
 ```
 
 3. Install frontend dependencies
 ```bash
-cd client
+cd frontend
 npm install
 ```
 
 4. Set up environment variables
 ```bash
-cp .env.example server/.env
+cp .env.example backend/.env
 ```
 
 5. Start the development servers
 
 Backend:
 ```bash
-cd server
+cd backend
 npm run dev
 ```
 
 Frontend:
 ```bash
-cd client
+cd frontend
 npm run dev
 ```
 
 ### Available Scripts
 
-#### Backend (server/)
+#### Backend (backend/)
 - `npm run dev` - Start development server with nodemon
 - `npm start` - Start production server
 - `npm run lint` - Run ESLint
 
-#### Frontend (client/)
+#### Frontend (frontend/)
 - `npm run dev` - Start Vite dev server
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build

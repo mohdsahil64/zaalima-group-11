@@ -40,8 +40,8 @@ coverage/
 *.lcov
 
 # Uploads
-server/uploads/*
-!server/uploads/.gitkeep
+backend/uploads/*
+!backend/uploads/.gitkeep
 
 # Misc
 *.tgz

@@ -1,5 +1,5 @@
 {
-  "name": "ats-client",
+  "name": "ats-frontend",
   "private": true,
   "version": "1.0.0",
   "type": "module",

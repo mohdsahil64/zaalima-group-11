@@ -1,5 +1,5 @@
 {
-  "name": "ats-server",
+  "name": "ats-backend",
   "version": "1.0.0",
   "description": "AI-Powered Applicant Tracking System - Backend API",
   "main": "src/server.js",
