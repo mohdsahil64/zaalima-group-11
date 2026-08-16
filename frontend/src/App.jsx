@@ -30,6 +30,7 @@ const RecruiterDashboard = lazy(() => import('@/pages/Recruiter/RecruiterDashboa
 const RecruiterCompany = lazy(() => import('@/pages/Recruiter/RecruiterCompany'));
 const RecruiterJobs = lazy(() => import('@/pages/Recruiter/RecruiterJobs'));
 const RecruiterCreateJob = lazy(() => import('@/pages/Recruiter/RecruiterCreateJob'));
+const RecruiterJobDetail = lazy(() => import('@/pages/Recruiter/RecruiterJobDetail'));
 const RecruiterApplications = lazy(() => import('@/pages/Recruiter/RecruiterApplications'));
 const RecruiterCandidates = lazy(() => import('@/pages/Recruiter/RecruiterCandidates'));
 const RecruiterSettings = lazy(() => import('@/pages/Recruiter/RecruiterSettings'));
@@ -85,6 +86,7 @@ const App = () => {
             <Route path="recruiter/company" element={<RecruiterCompany />} />
             <Route path="recruiter/jobs" element={<RecruiterJobs />} />
             <Route path="recruiter/jobs/create" element={<RecruiterCreateJob />} />
+            <Route path="recruiter/jobs/:id" element={<RecruiterJobDetail />} />
             <Route path="recruiter/applications" element={<RecruiterApplications />} />
             <Route path="recruiter/candidates" element={<RecruiterCandidates />} />
             <Route path="recruiter/settings" element={<RecruiterSettings />} />

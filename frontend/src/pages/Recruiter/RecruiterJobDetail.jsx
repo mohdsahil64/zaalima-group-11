@@ -1,33 +1,52 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { HiArrowLeft } from 'react-icons/hi2';
 import JobService from '@/services/job.service';
-import { Card, PageHeader, Input, Textarea, Select, Button } from '@/components/common';
+import { Card, PageHeader, Input, Textarea, Select, Button, Loader } from '@/components/common';
 import { JOB_TYPES, EXPERIENCE_LEVELS } from '@/constants';
 import toast from 'react-hot-toast';
 
-const RecruiterCreateJob = () => {
+const RecruiterJobDetail = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: { status: 'draft' },
+  const { data, isLoading } = useQuery({
+    queryKey: ['job', id],
+    queryFn: () => JobService.getJob(id),
   });
 
-  const createMutation = useMutation({
-    mutationFn: (data) => JobService.createJob(data),
+  const job = data?.data?.job;
+
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    values: job ? {
+      title: job.title,
+      description: job.description,
+      responsibilities: job.responsibilities || '',
+      location: job.location,
+      type: job.type,
+      experience: job.experience,
+      education: job.education || '',
+      salaryMin: job.salary?.min || '',
+      salaryMax: job.salary?.max || '',
+      skills: job.skills?.join(', ') || '',
+      requirements: job.requirements?.join(', ') || '',
+      status: job.status,
+    } : undefined,
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: (data) => JobService.updateJob(id, data),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['job', id] });
       queryClient.invalidateQueries({ queryKey: ['recruiter', 'jobs'] });
-      toast.success('Job created successfully');
-      navigate('/recruiter/jobs');
+      toast.success('Job updated');
     },
-    onError: (err) => toast.error(err.message || 'Failed to create job'),
+    onError: (err) => toast.error(err.message || 'Failed to update'),
   });
 
   const onSubmit = (data) => {
-    // Process skills and requirements from comma-separated strings
     const processed = {
       ...data,
       skills: data.skills ? data.skills.split(',').map(s => s.trim()).filter(Boolean) : [],
@@ -39,14 +58,16 @@ const RecruiterCreateJob = () => {
     };
     delete processed.salaryMin;
     delete processed.salaryMax;
-    createMutation.mutate(processed);
+    updateMutation.mutate(processed);
   };
+
+  if (isLoading) return <Loader />;
 
   return (
     <div>
       <PageHeader
-        title="Create Job"
-        subtitle="Post a new job opening"
+        title="Edit Job"
+        subtitle={job?.title}
         actions={
           <Link to="/recruiter/jobs">
             <Button variant="ghost" icon={HiArrowLeft}>Back to Jobs</Button>
@@ -58,80 +79,52 @@ const RecruiterCreateJob = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <Input
             label="Job Title"
-            placeholder="e.g. Senior Frontend Developer"
             error={errors.title?.message}
-            {...register('title', { required: 'Job title is required' })}
+            {...register('title', { required: 'Title is required' })}
           />
-
           <Textarea
             label="Description"
-            placeholder="Describe the role, responsibilities, and expectations..."
             rows={5}
             error={errors.description?.message}
             {...register('description', { required: 'Description is required' })}
           />
-
-          <Textarea
-            label="Responsibilities"
-            placeholder="Key responsibilities for this role..."
-            rows={4}
-            {...register('responsibilities')}
-          />
+          <Textarea label="Responsibilities" rows={4} {...register('responsibilities')} />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <Input
               label="Location"
-              placeholder="e.g. San Francisco, CA or Remote"
               error={errors.location?.message}
               {...register('location', { required: 'Location is required' })}
             />
             <Select
               label="Employment Type"
               options={JOB_TYPES}
-              placeholder="Select type"
               error={errors.type?.message}
-              {...register('type', { required: 'Employment type is required' })}
+              {...register('type', { required: 'Type is required' })}
             />
-            <Select
-              label="Experience Level"
-              options={EXPERIENCE_LEVELS}
-              placeholder="Select level"
-              {...register('experience')}
-            />
-            <Input
-              label="Education"
-              placeholder="e.g. Bachelor's in Computer Science"
-              {...register('education')}
-            />
+            <Select label="Experience Level" options={EXPERIENCE_LEVELS} {...register('experience')} />
+            <Input label="Education" {...register('education')} />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-1.5">Salary Range (USD)</label>
             <div className="grid grid-cols-2 gap-4">
-              <Input placeholder="Min (e.g. 80000)" type="number" {...register('salaryMin')} />
-              <Input placeholder="Max (e.g. 120000)" type="number" {...register('salaryMax')} />
+              <Input placeholder="Min" type="number" {...register('salaryMin')} />
+              <Input placeholder="Max" type="number" {...register('salaryMax')} />
             </div>
           </div>
 
-          <Textarea
-            label="Required Skills"
-            placeholder="Enter skills separated by commas (e.g. React, Node.js, TypeScript)"
-            rows={2}
-            {...register('skills')}
-          />
-
-          <Textarea
-            label="Requirements"
-            placeholder="Enter requirements separated by commas"
-            rows={3}
-            {...register('requirements')}
-          />
+          <Textarea label="Skills (comma-separated)" rows={2} {...register('skills')} />
+          <Textarea label="Requirements (comma-separated)" rows={3} {...register('requirements')} />
 
           <Select
             label="Status"
             options={[
-              { value: 'draft', label: 'Save as Draft' },
-              { value: 'open', label: 'Publish Immediately' },
+              { value: 'draft', label: 'Draft' },
+              { value: 'open', label: 'Open (Published)' },
+              { value: 'paused', label: 'Paused' },
+              { value: 'closed', label: 'Closed' },
+              { value: 'archived', label: 'Archived' },
             ]}
             {...register('status')}
           />
@@ -140,8 +133,8 @@ const RecruiterCreateJob = () => {
             <Link to="/recruiter/jobs">
               <Button variant="secondary" type="button">Cancel</Button>
             </Link>
-            <Button type="submit" loading={createMutation.isPending}>
-              Create Job
+            <Button type="submit" loading={updateMutation.isPending}>
+              Save Changes
             </Button>
           </div>
         </form>
@@ -150,4 +143,4 @@ const RecruiterCreateJob = () => {
   );
 };
 
-export default RecruiterCreateJob;
+export default RecruiterJobDetail;
