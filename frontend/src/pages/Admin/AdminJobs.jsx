@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { HiBriefcase } from 'react-icons/hi2';
 import AdminService from '@/services/admin.service';
-import { PageHeader, Card, SearchBox, Select, EmptyState, Badge, Loader } from '@/components/common';
+import { PageHeader, Card, SearchBox, Select, EmptyState, Badge, Skeleton } from '@/components/common';
 import { formatDate, capitalize } from '@/utils';
 
 const statusOptions = [
@@ -10,16 +10,8 @@ const statusOptions = [
   { value: 'open', label: 'Open' },
   { value: 'closed', label: 'Closed' },
   { value: 'paused', label: 'Paused' },
-  { value: 'archived', label: 'Archived' },
 ];
-
-const statusVariant = {
-  open: 'success',
-  draft: 'default',
-  closed: 'error',
-  paused: 'warning',
-  archived: 'default',
-};
+const statusVariant = { open: 'success', draft: 'default', closed: 'error', paused: 'warning', archived: 'default' };
 
 const AdminJobs = () => {
   const [search, setSearch] = useState('');
@@ -32,50 +24,38 @@ const AdminJobs = () => {
 
   const jobs = data?.data || [];
 
-  if (isLoading) return <Loader />;
+  if (isLoading) return <Skeleton.Table rows={5} />;
 
   return (
-    <div>
-      <PageHeader title="Jobs" subtitle="Monitor all job postings across the platform" />
-
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <SearchBox value={search} onChange={setSearch} placeholder="Search jobs..." className="flex-1 max-w-md" />
-        <Select
-          options={statusOptions}
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          placeholder="All Status"
-          className="w-full sm:w-48"
-        />
+    <div className="page-enter">
+      <PageHeader title="Jobs" subtitle="Monitor all job postings" />
+      <div className="flex flex-col sm:flex-row gap-3 mb-5">
+        <SearchBox value={search} onChange={setSearch} placeholder="Search..." className="flex-1 max-w-sm" />
+        <Select options={statusOptions} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} placeholder="All Status" className="w-full sm:w-40" />
       </div>
-
       <Card padding="none">
         {jobs.length === 0 ? (
-          <EmptyState icon={HiBriefcase} title="No jobs found" description="Jobs will appear here once recruiters post them." />
+          <EmptyState icon={HiBriefcase} title="No jobs found" />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-text-secondary uppercase">Title</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-text-secondary uppercase">Company</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-text-secondary uppercase">Type</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-text-secondary uppercase">Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-text-secondary uppercase">Applications</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-text-secondary uppercase">Posted</th>
-                </tr>
-              </thead>
+              <thead><tr className="border-b border-border">
+                <th className="px-4 py-2.5 text-left text-[11px] font-medium text-text-muted uppercase tracking-wider">Title</th>
+                <th className="px-4 py-2.5 text-left text-[11px] font-medium text-text-muted uppercase tracking-wider">Company</th>
+                <th className="px-4 py-2.5 text-left text-[11px] font-medium text-text-muted uppercase tracking-wider">Type</th>
+                <th className="px-4 py-2.5 text-left text-[11px] font-medium text-text-muted uppercase tracking-wider">Status</th>
+                <th className="px-4 py-2.5 text-left text-[11px] font-medium text-text-muted uppercase tracking-wider">Apps</th>
+                <th className="px-4 py-2.5 text-left text-[11px] font-medium text-text-muted uppercase tracking-wider">Posted</th>
+              </tr></thead>
               <tbody className="divide-y divide-border">
                 {jobs.map((job) => (
-                  <tr key={job._id} className="hover:bg-surface/50">
+                  <tr key={job._id} className="hover:bg-surface-hover/50 transition-colors">
                     <td className="px-4 py-3 text-sm font-medium text-text">{job.title}</td>
-                    <td className="px-4 py-3 text-sm text-text-secondary">{job.company?.name || '-'}</td>
-                    <td className="px-4 py-3 text-sm text-text-secondary">{capitalize(job.type)}</td>
-                    <td className="px-4 py-3">
-                      <Badge variant={statusVariant[job.status] || 'default'}>{job.status}</Badge>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-text">{job.totalApplications}</td>
-                    <td className="px-4 py-3 text-sm text-text-secondary">{formatDate(job.createdAt)}</td>
+                    <td className="px-4 py-3 text-xs text-text-muted">{job.company?.name || '-'}</td>
+                    <td className="px-4 py-3 text-xs text-text-secondary">{capitalize(job.type)}</td>
+                    <td className="px-4 py-3"><Badge variant={statusVariant[job.status]} dot>{job.status}</Badge></td>
+                    <td className="px-4 py-3 text-xs text-text">{job.totalApplications}</td>
+                    <td className="px-4 py-3 text-xs text-text-muted">{formatDate(job.createdAt)}</td>
                   </tr>
                 ))}
               </tbody>
