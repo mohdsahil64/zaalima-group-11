@@ -1,5 +1,6 @@
 import s3Service from '../services/s3.service.js';
 import parserService from '../services/parser.service.js';
+import aiService from '../services/ai.service.js';
 import Application from '../models/Application.js';
 import Applicant from '../models/Applicant.js';
 import ApiError from '../utils/ApiError.js';
@@ -98,9 +99,16 @@ export const uploadResumeForApplication = asyncHandler(async (req, res) => {
   application.aiStatus = 'pending';
   await application.save();
 
-  // Parse resume asynchronously — don't block the response
+  // Parse resume asynchronously — then trigger AI analysis
   if (mimetype === 'application/pdf') {
-    parserService.parseAndSave(applicationId, buffer).catch((err) => {
+    parserService.parseAndSave(applicationId, buffer).then(() => {
+      // After parsing, trigger AI if configured
+      if (aiService.isConfigured()) {
+        aiService.analyzeAndSave(applicationId).catch((err) => {
+          console.error('[AI] Auto-analysis failed:', err.message);
+        });
+      }
+    }).catch((err) => {
       console.error('[Resume] Async parse failed:', err.message);
     });
   }
