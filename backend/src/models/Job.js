@@ -13,10 +13,15 @@ const jobSchema = new mongoose.Schema(
       required: [true, 'Job description is required'],
       maxlength: [5000, 'Description cannot exceed 5000 characters'],
     },
-    company: {
+    responsibilities: {
       type: String,
-      required: [true, 'Company name is required'],
-      trim: true,
+      maxlength: [3000, 'Responsibilities cannot exceed 3000 characters'],
+      default: null,
+    },
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      required: true,
     },
     location: {
       type: String,
@@ -32,6 +37,11 @@ const jobSchema = new mongoose.Schema(
       type: String,
       enum: ['entry', 'mid', 'senior', 'lead', 'executive'],
       default: 'mid',
+    },
+    education: {
+      type: String,
+      trim: true,
+      default: null,
     },
     salary: {
       min: { type: Number, default: null },
@@ -63,8 +73,8 @@ const jobSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['open', 'closed', 'draft', 'paused'],
-      default: 'open',
+      enum: ['draft', 'open', 'closed', 'paused', 'archived'],
+      default: 'draft',
     },
     applicationDeadline: {
       type: Date,
@@ -82,9 +92,11 @@ const jobSchema = new mongoose.Schema(
   }
 );
 
-// Index for search
+// Indexes for search and filtering
 jobSchema.index({ title: 'text', description: 'text', skills: 'text' });
 jobSchema.index({ status: 1, createdAt: -1 });
+jobSchema.index({ company: 1 });
+jobSchema.index({ recruiter: 1 });
 
 const Job = mongoose.model('Job', jobSchema);
 

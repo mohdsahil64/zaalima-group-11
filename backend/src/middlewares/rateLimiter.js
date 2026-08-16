@@ -17,11 +17,11 @@ export const apiLimiter = rateLimit({
 
 /**
  * Strict limiter for auth endpoints (login, register, forgot-password)
- * 10 requests per 15 minutes per IP
+ * 50 requests per 15 minutes per IP (generous for development)
  */
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: 50,
   standardHeaders: true,
   legacyHeaders: false,
   message: {

@@ -10,7 +10,7 @@ export const createApplicationValidator = [
 
 export const updateApplicationStatusValidator = [
   body('status')
-    .isIn(['pending', 'reviewing', 'shortlisted', 'interview', 'offered', 'rejected', 'withdrawn'])
+    .isIn(['applied', 'shortlisted', 'interview', 'offered', 'rejected', 'withdrawn'])
     .withMessage('Invalid application status'),
   body('notes')
     .optional()

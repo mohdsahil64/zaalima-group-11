@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { HiUser, HiEnvelope, HiLockClosed } from 'react-icons/hi2';
+import { HiUser, HiEnvelope, HiLockClosed, HiBuildingOffice2 } from 'react-icons/hi2';
 import { useAuth } from '@/context/AuthContext';
 import { Button, Input, Select } from '@/components/common';
 import toast from 'react-hot-toast';
@@ -14,8 +14,11 @@ const RegisterPage = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
+
+  const selectedRole = watch('role');
 
   const onSubmit = async (data) => {
     try {
@@ -88,6 +91,18 @@ const RegisterPage = () => {
           ]}
           {...register('role', { required: 'Please select your role' })}
         />
+
+        {selectedRole === 'recruiter' && (
+          <Input
+            label="Company Name"
+            icon={HiBuildingOffice2}
+            placeholder="Your company name"
+            error={errors.companyName?.message}
+            {...register('companyName', {
+              required: selectedRole === 'recruiter' ? 'Company name is required' : false,
+            })}
+          />
+        )}
 
         <Button type="submit" fullWidth loading={loading}>
           Create Account

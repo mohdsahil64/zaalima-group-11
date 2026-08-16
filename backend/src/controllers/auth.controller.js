@@ -1,4 +1,5 @@
 import authService from '../services/auth.service.js';
+import Recruiter from '../models/Recruiter.js';
 import { generateTokenResponse } from '../middlewares/auth.js';
 import ApiResponse from '../utils/ApiResponse.js';
 import asyncHandler from '../utils/asyncHandler.js';
@@ -45,8 +46,7 @@ export const logout = asyncHandler(async (_req, res) => {
 export const forgotPassword = asyncHandler(async (req, res) => {
   const resetToken = await authService.forgotPassword(req.body.email);
 
-  // In production, send email with reset URL
-  // For now, return token in development
+  // TODO: Send email with reset URL in production
   const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/reset-password/${resetToken}`;
 
   ApiResponse.success(res, { resetUrl }, 'Password reset token generated');
@@ -63,10 +63,23 @@ export const resetPassword = asyncHandler(async (req, res) => {
 });
 
 /**
- * @desc    Get current user
+ * @desc    Get current user with role-specific profile
  * @route   GET /api/v1/auth/me
  * @access  Private
  */
 export const getMe = asyncHandler(async (req, res) => {
-  ApiResponse.success(res, { user: req.user }, 'User retrieved successfully');
+  const userData = { user: req.user };
+
+  // If recruiter, include company info
+  if (req.user.role === 'recruiter') {
+    const recruiter = await Recruiter.findOne({ user: req.user._id })
+      .populate('company')
+      .lean();
+    if (recruiter) {
+      userData.recruiter = recruiter;
+      userData.company = recruiter.company;
+    }
+  }
+
+  ApiResponse.success(res, userData, 'User retrieved successfully');
 });

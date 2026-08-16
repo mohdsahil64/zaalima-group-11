@@ -16,6 +16,7 @@ import userRoutes from './routes/user.routes.js';
 import jobRoutes from './routes/job.routes.js';
 import applicationRoutes from './routes/application.routes.js';
 import adminRoutes from './routes/admin.routes.js';
+import companyRoutes from './routes/company.routes.js';
 
 // Connect to database
 connectDB();
@@ -59,6 +60,7 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/jobs', jobRoutes);
 app.use('/api/v1/applications', applicationRoutes);
 app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/companies', companyRoutes);
 
 // Health check
 app.get('/api/v1/health', (_req, res) => {

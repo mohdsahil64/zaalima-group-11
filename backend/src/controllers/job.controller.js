@@ -3,7 +3,7 @@ import ApiResponse from '../utils/ApiResponse.js';
 import asyncHandler from '../utils/asyncHandler.js';
 
 /**
- * @desc    Get all jobs (public)
+ * @desc    Get all jobs (public, only open)
  * @route   GET /api/v1/jobs
  * @access  Public
  */

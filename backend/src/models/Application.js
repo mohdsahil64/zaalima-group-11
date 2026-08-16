@@ -12,8 +12,14 @@ const applicationSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      required: true,
+    },
     resume: {
       url: { type: String, default: null },
+      key: { type: String, default: null },
       filename: { type: String, default: null },
     },
     coverLetter: {
@@ -23,13 +29,14 @@ const applicationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['pending', 'reviewing', 'shortlisted', 'interview', 'offered', 'rejected', 'withdrawn'],
-      default: 'pending',
+      enum: ['applied', 'shortlisted', 'interview', 'offered', 'rejected', 'withdrawn'],
+      default: 'applied',
     },
     notes: {
       type: String,
       default: null,
     },
+    // AI Analysis fields
     aiScore: {
       type: Number,
       min: 0,
@@ -37,11 +44,32 @@ const applicationSchema = new mongoose.Schema(
       default: null,
     },
     aiAnalysis: {
-      type: mongoose.Schema.Types.Mixed,
-      default: null,
+      matchScore: { type: Number, default: null },
+      skillsMatched: [String],
+      skillsMissing: [String],
+      experienceMatch: { type: Boolean, default: null },
+      summary: { type: String, default: null },
+      recommendation: { type: String, default: null },
+    },
+    aiStatus: {
+      type: String,
+      enum: ['pending', 'processing', 'analyzed', 'failed'],
+      default: 'pending',
+    },
+    // Resume parsing
+    parsedResume: {
+      rawText: { type: String, default: null },
+      skills: [String],
+      experience: { type: String, default: null },
+      education: { type: String, default: null },
+      parsedAt: { type: Date, default: null },
     },
     interviewDate: {
       type: Date,
+      default: null,
+    },
+    interviewNotes: {
+      type: String,
       default: null,
     },
     appliedAt: {
@@ -57,6 +85,9 @@ const applicationSchema = new mongoose.Schema(
 // Prevent duplicate applications
 applicationSchema.index({ job: 1, applicant: 1 }, { unique: true });
 applicationSchema.index({ status: 1 });
+applicationSchema.index({ company: 1 });
+applicationSchema.index({ applicant: 1, createdAt: -1 });
+applicationSchema.index({ aiScore: -1 });
 
 const Application = mongoose.model('Application', applicationSchema);
 
