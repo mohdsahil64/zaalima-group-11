@@ -40,6 +40,15 @@ const config = {
   google: {
     aiApiKey: process.env.GOOGLE_AI_API_KEY || '',
   },
+
+  email: {
+    host: process.env.SMTP_HOST || '',
+    port: parseInt(process.env.SMTP_PORT, 10) || 587,
+    user: process.env.SMTP_USER || '',
+    password: process.env.SMTP_PASSWORD || '',
+    from: process.env.EMAIL_FROM || 'noreply@ats.com',
+    fromName: process.env.EMAIL_FROM_NAME || 'ATS Platform',
+  },
 };
 
 export default config;

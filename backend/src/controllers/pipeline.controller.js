@@ -1,5 +1,7 @@
 import Application from '../models/Application.js';
 import Job from '../models/Job.js';
+import User from '../models/User.js';
+import emailService from '../services/email.service.js';
 import ApiError from '../utils/ApiError.js';
 import ApiResponse from '../utils/ApiResponse.js';
 import asyncHandler from '../utils/asyncHandler.js';
@@ -75,6 +77,19 @@ export const moveApplication = asyncHandler(async (req, res) => {
   application.status = status;
   if (notes) application.notes = notes;
   await application.save();
+
+  // Send email notification (non-blocking)
+  const applicant = await User.findById(application.applicant).select('firstName email').lean();
+  const job = await Job.findById(application.job).populate('company', 'name').lean();
+  if (applicant && job) {
+    emailService.notifyStatusChange({
+      applicantEmail: applicant.email,
+      applicantName: applicant.firstName,
+      jobTitle: job.title,
+      companyName: job.company?.name || '',
+      newStatus: status,
+    }).catch(() => {});
+  }
 
   ApiResponse.success(res, { application }, `Application moved to ${status}`);
 });

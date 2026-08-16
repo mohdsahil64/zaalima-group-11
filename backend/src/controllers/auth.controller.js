@@ -1,5 +1,7 @@
 import authService from '../services/auth.service.js';
+import emailService from '../services/email.service.js';
 import Recruiter from '../models/Recruiter.js';
+import User from '../models/User.js';
 import { generateTokenResponse } from '../middlewares/auth.js';
 import ApiResponse from '../utils/ApiResponse.js';
 import asyncHandler from '../utils/asyncHandler.js';
@@ -45,11 +47,19 @@ export const logout = asyncHandler(async (_req, res) => {
  */
 export const forgotPassword = asyncHandler(async (req, res) => {
   const resetToken = await authService.forgotPassword(req.body.email);
+  const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/reset-password/${resetToken}`;
 
-  // TODO: Send email with reset URL in production
-  const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/reset-password/${resetToken}`;
+  // Send email (non-blocking)
+  const user = await User.findOne({ email: req.body.email }).select('firstName email').lean();
+  if (user) {
+    emailService.sendPasswordReset({
+      email: user.email,
+      name: user.firstName,
+      resetUrl,
+    }).catch(() => {});
+  }
 
-  ApiResponse.success(res, { resetUrl }, 'Password reset token generated');
+  ApiResponse.success(res, null, 'Password reset email sent');
 });
 
 /**

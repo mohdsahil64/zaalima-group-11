@@ -1,4 +1,6 @@
 import adminService from '../services/admin.service.js';
+import emailService from '../services/email.service.js';
+import User from '../models/User.js';
 import ApiResponse from '../utils/ApiResponse.js';
 import asyncHandler from '../utils/asyncHandler.js';
 
@@ -39,6 +41,19 @@ export const getCompany = asyncHandler(async (req, res) => {
  */
 export const approveCompany = asyncHandler(async (req, res) => {
   const company = await adminService.approveCompany(req.params.id);
+
+  // Send approval email to company owner (non-blocking)
+  if (company.owner) {
+    const owner = await User.findById(company.owner).select('firstName email').lean();
+    if (owner) {
+      emailService.notifyCompanyApproved({
+        recruiterEmail: owner.email,
+        recruiterName: owner.firstName,
+        companyName: company.name,
+      }).catch(() => {});
+    }
+  }
+
   ApiResponse.success(res, { company }, 'Company approved successfully');
 });
 
