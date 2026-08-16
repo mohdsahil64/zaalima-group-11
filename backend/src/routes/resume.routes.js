@@ -1,6 +1,11 @@
 import { Router } from 'express';
 import multer from 'multer';
-import { uploadResume, uploadResumeForApplication, getResumeUrl } from '../controllers/resume.controller.js';
+import {
+  uploadResume,
+  uploadResumeForApplication,
+  parseApplicationResume,
+  getResumeUrl,
+} from '../controllers/resume.controller.js';
 import { protect } from '../middlewares/auth.js';
 import { authorize } from '../middlewares/role.js';
 
@@ -31,6 +36,9 @@ router.post('/upload', authorize('applicant'), upload.single('resume'), uploadRe
 
 // Upload resume to specific application
 router.post('/upload/:applicationId', authorize('applicant'), upload.single('resume'), uploadResumeForApplication);
+
+// Trigger parsing for an application (recruiter/admin retry)
+router.post('/parse/:applicationId', authorize('recruiter', 'super_admin'), parseApplicationResume);
 
 // Get signed download URL
 router.get('/download/:key(*)', getResumeUrl);
