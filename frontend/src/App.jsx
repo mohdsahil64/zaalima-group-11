@@ -33,6 +33,7 @@ const RecruiterCreateJob = lazy(() => import('@/pages/Recruiter/RecruiterCreateJ
 const RecruiterJobDetail = lazy(() => import('@/pages/Recruiter/RecruiterJobDetail'));
 const RecruiterApplications = lazy(() => import('@/pages/Recruiter/RecruiterApplications'));
 const RecruiterCandidates = lazy(() => import('@/pages/Recruiter/RecruiterCandidates'));
+const RecruiterPipeline = lazy(() => import('@/pages/Recruiter/RecruiterPipeline'));
 const RecruiterSettings = lazy(() => import('@/pages/Recruiter/RecruiterSettings'));
 
 // Applicant pages
@@ -89,6 +90,7 @@ const App = () => {
             <Route path="recruiter/jobs/:id" element={<RecruiterJobDetail />} />
             <Route path="recruiter/applications" element={<RecruiterApplications />} />
             <Route path="recruiter/candidates" element={<RecruiterCandidates />} />
+            <Route path="recruiter/pipeline" element={<RecruiterPipeline />} />
             <Route path="recruiter/settings" element={<RecruiterSettings />} />
           </Route>
         </Route>

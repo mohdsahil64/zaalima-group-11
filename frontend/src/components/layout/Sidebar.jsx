@@ -10,6 +10,7 @@ import {
   HiBuildingOffice2,
   HiDocumentArrowUp,
   HiAcademicCap,
+  HiViewColumns,
 } from 'react-icons/hi2';
 import { useAuth } from '@/context/AuthContext';
 import { ROLES } from '@/constants';
@@ -20,6 +21,7 @@ const recruiterLinks = [
   { to: '/recruiter/company', label: 'Company Profile', icon: HiBuildingOffice2 },
   { to: '/recruiter/jobs', label: 'Jobs', icon: HiBriefcase },
   { to: '/recruiter/applications', label: 'Applications', icon: HiDocumentText },
+  { to: '/recruiter/pipeline', label: 'Pipeline', icon: HiViewColumns },
   { to: '/recruiter/candidates', label: 'Candidates', icon: HiUsers },
 ];
 
