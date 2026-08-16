@@ -1,48 +1,66 @@
+import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { useForm } from 'react-hook-form';
 import { useAuth } from '@/context/AuthContext';
-import { Card, PageHeader, Input, Textarea, Button } from '@/components/common';
+import UserService from '@/services/user.service';
+import { Card, PageHeader, Input, Textarea, Button, Avatar } from '@/components/common';
+import toast from 'react-hot-toast';
 
 const ApplicantProfile = () => {
-  const { user } = useAuth();
+  const { user, loadUser } = useAuth();
+
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: {
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      phone: user?.phone || '',
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: (data) => UserService.updateProfile(data),
+    onSuccess: () => {
+      loadUser();
+      toast.success('Profile updated');
+    },
+    onError: (err) => toast.error(err.message || 'Failed to update'),
+  });
+
+  const onSubmit = (data) => updateMutation.mutate(data);
 
   return (
     <div>
-      <PageHeader
-        title="My Profile"
-        subtitle="Manage your personal information"
-      />
+      <PageHeader title="My Profile" subtitle="Manage your personal information" />
 
       <div className="space-y-6">
         <Card>
-          <h3 className="text-lg font-semibold text-text mb-4">Personal Information</h3>
-          <form className="space-y-5">
+          <div className="flex items-center gap-4 mb-6 pb-6 border-b border-border">
+            <Avatar src={user?.avatar} firstName={user?.firstName} lastName={user?.lastName} size="xl" />
+            <div>
+              <h2 className="text-xl font-semibold text-text">{user?.firstName} {user?.lastName}</h2>
+              <p className="text-text-secondary">{user?.email}</p>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <Input label="First Name" placeholder="John" defaultValue={user?.firstName} />
-              <Input label="Last Name" placeholder="Doe" defaultValue={user?.lastName} />
-              <Input label="Email" type="email" placeholder="you@example.com" defaultValue={user?.email} disabled />
-              <Input label="Phone" placeholder="+1 (555) 000-0000" defaultValue={user?.phone || ''} />
-              <Input label="Location" placeholder="City, Country" />
-              <Input label="Portfolio / Website" placeholder="https://yoursite.com" />
+              <Input
+                label="First Name"
+                error={errors.firstName?.message}
+                {...register('firstName', { required: 'Required' })}
+              />
+              <Input
+                label="Last Name"
+                error={errors.lastName?.message}
+                {...register('lastName', { required: 'Required' })}
+              />
+              <Input label="Phone" placeholder="+1 (555) 000-0000" {...register('phone')} />
+              <Input label="Email" value={user?.email} disabled />
             </div>
             <div className="flex justify-end">
-              <Button type="button">Save Changes</Button>
+              <Button type="submit" loading={updateMutation.isPending}>Save Changes</Button>
             </div>
           </form>
-        </Card>
-
-        <Card>
-          <h3 className="text-lg font-semibold text-text mb-4">Skills</h3>
-          <Textarea placeholder="Enter your skills separated by commas (e.g. JavaScript, React, Node.js, Python)" rows={3} />
-          <div className="flex justify-end mt-4">
-            <Button type="button" variant="secondary">Update Skills</Button>
-          </div>
-        </Card>
-
-        <Card>
-          <h3 className="text-lg font-semibold text-text mb-4">Experience</h3>
-          <p className="text-sm text-text-secondary">No experience added yet. Add your work history to strengthen your profile.</p>
-          <div className="mt-4">
-            <Button type="button" variant="secondary">Add Experience</Button>
-          </div>
         </Card>
       </div>
     </div>

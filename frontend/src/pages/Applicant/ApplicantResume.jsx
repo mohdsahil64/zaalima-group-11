@@ -1,13 +1,11 @@
-import { HiDocumentArrowUp, HiCloudArrowUp } from 'react-icons/hi2';
+import { HiDocumentArrowUp, HiCloudArrowUp, HiCheckCircle } from 'react-icons/hi2';
 import { Card, PageHeader, Button } from '@/components/common';
 
 const ApplicantResume = () => {
+  // Resume upload will be connected to S3 in Phase 6
   return (
     <div>
-      <PageHeader
-        title="My Resume"
-        subtitle="Upload and manage your resume"
-      />
+      <PageHeader title="My Resume" subtitle="Upload and manage your resume" />
 
       <Card>
         <div className="text-center py-12">
@@ -17,6 +15,7 @@ const ApplicantResume = () => {
           <h3 className="text-lg font-semibold text-text mb-2">Upload Your Resume</h3>
           <p className="text-sm text-text-secondary max-w-sm mx-auto mb-6">
             Upload your resume in PDF or DOCX format. Max file size: 5MB.
+            Your resume will be automatically analyzed using AI when you apply.
           </p>
           <div className="border-2 border-dashed border-border rounded-[12px] p-8 max-w-md mx-auto mb-6 hover:border-primary/50 transition-colors cursor-pointer">
             <HiCloudArrowUp className="w-10 h-10 text-text-secondary mx-auto mb-3" />
@@ -26,6 +25,9 @@ const ApplicantResume = () => {
             <p className="text-xs text-text-secondary mt-1">PDF, DOC, DOCX up to 5MB</p>
           </div>
           <Button icon={HiCloudArrowUp}>Upload Resume</Button>
+          <p className="text-xs text-text-secondary mt-4">
+            Resume upload will be connected to AWS S3 storage. Configure AWS credentials to enable.
+          </p>
         </div>
       </Card>
     </div>
