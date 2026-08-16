@@ -6,9 +6,7 @@ import { APP_NAME } from '@/constants';
 const AuthLayout = () => {
   const { isAuthenticated, loading, user } = useAuth();
 
-  if (loading) {
-    return <Loader fullScreen />;
-  }
+  if (loading) return <Loader fullScreen />;
 
   if (isAuthenticated) {
     const roleRoutes = {
@@ -21,24 +19,41 @@ const AuthLayout = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Left - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-surface border-r border-border items-center justify-center p-12">
-        <div className="max-w-md text-center">
-          <div className="w-16 h-16 rounded-[16px] bg-primary mx-auto mb-6 flex items-center justify-center">
-            <span className="text-white text-2xl font-bold">{APP_NAME[0]}</span>
+      {/* Left - Branding panel */}
+      <div className="hidden lg:flex lg:w-[480px] bg-surface border-r border-border relative overflow-hidden">
+        <div className="absolute inset-0 dot-pattern opacity-30" />
+        <div className="relative z-10 flex items-center justify-center w-full p-12">
+          <div className="max-w-sm">
+            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center mb-8">
+              <span className="text-white text-lg font-bold">{APP_NAME[0]}</span>
+            </div>
+            <h1 className="text-2xl font-semibold text-text mb-3 tracking-tight">
+              AI-Powered Recruitment Platform
+            </h1>
+            <p className="text-sm text-text-secondary leading-relaxed">
+              Streamline your hiring with intelligent candidate matching, automated screening, and data-driven insights. Built for modern teams.
+            </p>
+            <div className="mt-10 space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                <p className="text-xs text-text-muted">AI-powered resume analysis and candidate scoring</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                <p className="text-xs text-text-muted">Visual hiring pipeline with drag-and-drop management</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                <p className="text-xs text-text-muted">Multi-portal access for admins, recruiters, and candidates</p>
+              </div>
+            </div>
           </div>
-          <h1 className="text-3xl font-bold text-text mb-3">
-            AI-Powered Recruitment
-          </h1>
-          <p className="text-text-secondary text-lg">
-            Streamline your hiring process with intelligent candidate matching, automated screening, and data-driven insights.
-          </p>
         </div>
       </div>
 
       {/* Right - Form */}
       <div className="flex-1 flex items-center justify-center p-6 sm:p-12">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-[380px]">
           <Outlet />
         </div>
       </div>

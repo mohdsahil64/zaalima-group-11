@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import { cn } from '@/utils';
 
 const Select = forwardRef(
-  ({ label, error, options = [], placeholder = 'Select an option', className = '', id, ...props }, ref) => {
+  ({ label, error, options = [], placeholder = 'Select...', className = '', id, required, ...props }, ref) => {
     const selectId = id || label?.toLowerCase().replace(/\s+/g, '-');
 
     return (
@@ -10,25 +10,26 @@ const Select = forwardRef(
         {label && (
           <label
             htmlFor={selectId}
-            className="block text-sm font-medium text-text-secondary mb-1.5"
+            className="block text-[13px] font-medium text-text-secondary mb-1.5"
           >
             {label}
+            {required && <span className="text-error ml-0.5">*</span>}
           </label>
         )}
         <select
           ref={ref}
           id={selectId}
           className={cn(
-            'w-full bg-surface border border-border rounded-[12px] px-4 py-2.5 text-text',
-            'focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
-            'transition-all duration-200 appearance-none cursor-pointer',
+            'w-full h-9 bg-surface border border-border rounded-lg px-3 text-sm text-text appearance-none cursor-pointer',
+            'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-150',
             'disabled:opacity-50 disabled:cursor-not-allowed',
-            error && 'border-error focus:ring-error',
+            'hover:border-text-muted',
+            error && 'border-error/50 focus:ring-error/30 focus:border-error',
             className
           )}
           {...props}
         >
-          <option value="" className="bg-surface text-text-secondary">
+          <option value="" className="bg-surface text-text-muted">
             {placeholder}
           </option>
           {options.map((option) => (
@@ -37,7 +38,7 @@ const Select = forwardRef(
             </option>
           ))}
         </select>
-        {error && <p className="mt-1.5 text-sm text-error">{error}</p>}
+        {error && <p className="mt-1 text-xs text-error">{error}</p>}
       </div>
     );
   }

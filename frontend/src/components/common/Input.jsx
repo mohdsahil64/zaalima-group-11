@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import { cn } from '@/utils';
 
 const Input = forwardRef(
-  ({ label, error, icon: Icon, className = '', type = 'text', id, ...props }, ref) => {
+  ({ label, error, icon: Icon, className = '', type = 'text', id, required, ...props }, ref) => {
     const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
 
     return (
@@ -10,15 +10,16 @@ const Input = forwardRef(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium text-text-secondary mb-1.5"
+            className="block text-[13px] font-medium text-text-secondary mb-1.5"
           >
             {label}
+            {required && <span className="text-error ml-0.5">*</span>}
           </label>
         )}
         <div className="relative">
           {Icon && (
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Icon className="h-5 w-5 text-text-secondary" />
+              <Icon className="h-4 w-4 text-text-muted" />
             </div>
           )}
           <input
@@ -26,18 +27,18 @@ const Input = forwardRef(
             id={inputId}
             type={type}
             className={cn(
-              'w-full bg-surface border border-border rounded-[12px] px-4 py-2.5 text-text placeholder-text-secondary/50',
-              'focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
-              'transition-all duration-200',
-              'disabled:opacity-50 disabled:cursor-not-allowed',
-              Icon && 'pl-10',
-              error && 'border-error focus:ring-error',
+              'w-full h-9 bg-surface border border-border rounded-lg px-3 text-sm text-text placeholder:text-text-muted',
+              'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-150',
+              'disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-elevated',
+              'hover:border-text-muted',
+              Icon && 'pl-9',
+              error && 'border-error/50 focus:ring-error/30 focus:border-error',
               className
             )}
             {...props}
           />
         </div>
-        {error && <p className="mt-1.5 text-sm text-error">{error}</p>}
+        {error && <p className="mt-1 text-xs text-error">{error}</p>}
       </div>
     );
   }

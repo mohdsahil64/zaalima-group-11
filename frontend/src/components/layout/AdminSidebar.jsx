@@ -8,7 +8,9 @@ import {
   HiDocumentText,
   HiCog6Tooth,
   HiXMark,
+  HiShieldCheck,
 } from 'react-icons/hi2';
+import { APP_NAME } from '@/constants';
 import { cn } from '@/utils';
 
 const adminLinks = [
@@ -20,79 +22,75 @@ const adminLinks = [
   { to: '/admin/applications', label: 'Applications', icon: HiDocumentText },
 ];
 
-const bottomLinks = [
-  { to: '/admin/settings', label: 'Settings', icon: HiCog6Tooth },
-];
-
 const AdminSidebar = ({ isOpen, onClose }) => {
   return (
     <>
       {isOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
-          onClick={onClose}
-        />
+        <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onClose} />
       )}
 
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 w-64 bg-surface border-r border-border transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:z-0',
+          'fixed inset-y-0 left-0 z-50 w-[240px] bg-surface border-r border-border flex flex-col transition-transform duration-200 ease-out lg:translate-x-0 lg:static lg:z-0',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
-        <div className="flex items-center justify-end p-4 lg:hidden">
-          <button
-            onClick={onClose}
-            className="p-2 rounded-[8px] text-text-secondary hover:text-text hover:bg-border transition-colors"
-            aria-label="Close sidebar"
-          >
-            <HiXMark className="w-5 h-5" />
+        {/* Logo */}
+        <div className="h-14 flex items-center justify-between px-4 border-b border-border shrink-0">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
+              <HiShieldCheck className="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <span className="text-sm font-semibold text-text">{APP_NAME}</span>
+              <span className="text-[10px] text-text-muted ml-1.5 bg-surface-elevated px-1.5 py-0.5 rounded">Admin</span>
+            </div>
+          </div>
+          <button onClick={onClose} className="p-1 rounded-md text-text-muted hover:text-text lg:hidden" aria-label="Close">
+            <HiXMark className="w-4 h-4" />
           </button>
         </div>
 
-        <nav className="flex flex-col h-full px-3 py-4 lg:pt-6">
-          <div className="flex-1 space-y-1">
-            {adminLinks.map((link) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                onClick={onClose}
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-sm font-medium transition-colors duration-200',
-                    isActive
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-text-secondary hover:text-text hover:bg-border'
-                  )
-                }
-              >
-                <link.icon className="w-5 h-5" />
-                {link.label}
-              </NavLink>
-            ))}
-          </div>
-
-          <div className="border-t border-border pt-4 mt-4 space-y-1">
-            {bottomLinks.map((link) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                onClick={onClose}
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-sm font-medium transition-colors duration-200',
-                    isActive
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-text-secondary hover:text-text hover:bg-border'
-                  )
-                }
-              >
-                <link.icon className="w-5 h-5" />
-                {link.label}
-              </NavLink>
-            ))}
-          </div>
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-0.5">
+          {adminLinks.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              onClick={onClose}
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-medium transition-colors duration-150',
+                  isActive
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-text-secondary hover:text-text hover:bg-surface-hover'
+                )
+              }
+            >
+              <link.icon className="w-4 h-4 shrink-0" />
+              {link.label}
+            </NavLink>
+          ))}
         </nav>
+
+        {/* Bottom */}
+        <div className="px-3 py-3 border-t border-border shrink-0">
+          <NavLink
+            to="/admin/settings"
+            onClick={onClose}
+            className={({ isActive }) =>
+              cn(
+                'flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-medium transition-colors duration-150',
+                isActive
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-text-secondary hover:text-text hover:bg-surface-hover'
+              )
+            }
+          >
+            <HiCog6Tooth className="w-4 h-4 shrink-0" />
+            Settings
+          </NavLink>
+        </div>
       </aside>
     </>
   );

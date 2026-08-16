@@ -1,27 +1,61 @@
 @import "tailwindcss";
 
 @theme {
+  /* ─── Primary Palette ─── */
   --color-primary: #4F46E5;
   --color-primary-light: #6366F1;
   --color-primary-dark: #4338CA;
-  --color-background: #0F172A;
-  --color-surface: #1E293B;
-  --color-border: #334155;
-  --color-text: #F8FAFC;
-  --color-text-secondary: #94A3B8;
+  --color-primary-50: #EEF2FF;
+  --color-primary-100: #E0E7FF;
+  --color-primary-900: #312E81;
+
+  /* ─── Neutral / Surface ─── */
+  --color-background: #09090B;
+  --color-surface: #18181B;
+  --color-surface-elevated: #1F1F23;
+  --color-surface-hover: #27272A;
+  --color-border: #27272A;
+  --color-border-subtle: #1F1F23;
+
+  /* ─── Text ─── */
+  --color-text: #FAFAFA;
+  --color-text-secondary: #A1A1AA;
+  --color-text-muted: #71717A;
+
+  /* ─── Semantic ─── */
   --color-success: #10B981;
+  --color-success-light: #D1FAE5;
   --color-warning: #F59E0B;
+  --color-warning-light: #FEF3C7;
   --color-error: #EF4444;
+  --color-error-light: #FEE2E2;
   --color-info: #3B82F6;
-  --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  --color-info-light: #DBEAFE;
+
+  /* ─── Typography ─── */
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* ─── Border Radius ─── */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+
+  /* ─── Shadows ─── */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.15);
 }
 
-/* Base styles */
-* {
+/* ─── Base Reset ─── */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -29,25 +63,28 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   font-family: var(--font-family-sans);
   background-color: var(--color-background);
   color: var(--color-text);
+  font-size: 14px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-/* Scrollbar */
+/* ─── Scrollbar ─── */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-background);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -56,16 +93,22 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-secondary);
+  background: var(--color-text-muted);
 }
 
-/* Focus styles */
+/* ─── Focus ─── */
 *:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
-/* Respect reduced motion preference */
+/* ─── Selection ─── */
+::selection {
+  background-color: rgba(79, 70, 229, 0.3);
+  color: var(--color-text);
+}
+
+/* ─── Reduced Motion ─── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -75,8 +118,47 @@ body {
   }
 }
 
-/* Selection */
-::selection {
-  background-color: var(--color-primary);
-  color: white;
+/* ─── Utility Classes ─── */
+.page-enter {
+  animation: pageEnter 0.3s ease-out;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.skeleton-pulse {
+  animation: pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-surface-elevated) 50%, var(--color-surface) 75%);
+  background-size: 200% 100%;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    background-position: 200% 0;
+  }
+  50% {
+    background-position: -200% 0;
+  }
+}
+
+/* ─── Dot Pattern (for auth backgrounds) ─── */
+.dot-pattern {
+  background-image: radial-gradient(circle, var(--color-border) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ─── Gradient Text ─── */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, #A78BFA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

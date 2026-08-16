@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { HiEnvelope, HiLockClosed } from 'react-icons/hi2';
 import { useAuth } from '@/context/AuthContext';
 import { Button, Input } from '@/components/common';
+import { APP_NAME } from '@/constants';
 import toast from 'react-hot-toast';
 
 const LoginPage = () => {
@@ -11,11 +12,7 @@ const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = async (data) => {
     try {
@@ -35,11 +32,19 @@ const LoginPage = () => {
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-text mb-2">Welcome back</h2>
-      <p className="text-text-secondary mb-8">Sign in to your account to continue</p>
+    <div className="page-enter">
+      {/* Mobile logo */}
+      <div className="flex items-center gap-2 mb-8 lg:hidden">
+        <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+          <span className="text-white font-bold text-sm">{APP_NAME[0]}</span>
+        </div>
+        <span className="text-base font-semibold text-text">{APP_NAME}</span>
+      </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <h2 className="text-xl font-semibold text-text tracking-tight">Welcome back</h2>
+      <p className="text-[13px] text-text-muted mt-1 mb-6">Sign in to your account to continue</p>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Input
           label="Email"
           type="email"
@@ -65,20 +70,20 @@ const LoginPage = () => {
 
         <div className="flex items-center justify-between">
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" className="w-4 h-4 rounded border-border bg-surface text-primary" />
-            <span className="text-sm text-text-secondary">Remember me</span>
+            <input type="checkbox" className="w-3.5 h-3.5 rounded border-border bg-surface text-primary accent-primary" />
+            <span className="text-xs text-text-muted">Remember me</span>
           </label>
-          <Link to="/forgot-password" className="text-sm text-primary hover:text-primary-light transition-colors">
+          <Link to="/forgot-password" className="text-xs text-primary hover:text-primary-light transition-colors">
             Forgot password?
           </Link>
         </div>
 
-        <Button type="submit" fullWidth loading={loading}>
+        <Button type="submit" fullWidth loading={loading} size="md">
           Sign In
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-text-secondary">
+      <p className="mt-6 text-center text-xs text-text-muted">
         Don&apos;t have an account?{' '}
         <Link to="/register" className="text-primary hover:text-primary-light transition-colors font-medium">
           Create account
