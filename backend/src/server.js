@@ -19,6 +19,7 @@ import adminRoutes from './routes/admin.routes.js';
 import companyRoutes from './routes/company.routes.js';
 import resumeRoutes from './routes/resume.routes.js';
 import aiRoutes from './routes/ai.routes.js';
+import rankingRoutes from './routes/ranking.routes.js';
 
 // Connect to database
 connectDB();
@@ -65,6 +66,7 @@ app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/companies', companyRoutes);
 app.use('/api/v1/resumes', resumeRoutes);
 app.use('/api/v1/ai', aiRoutes);
+app.use('/api/v1/ranking', rankingRoutes);
 
 // Health check
 app.get('/api/v1/health', (_req, res) => {
