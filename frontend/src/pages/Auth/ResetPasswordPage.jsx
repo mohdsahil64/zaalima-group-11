@@ -11,12 +11,7 @@ const ResetPasswordPage = () => {
   const { token } = useParams();
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
   const onSubmit = async (data) => {
     try {
@@ -32,9 +27,9 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-text mb-2">Reset your password</h2>
-      <p className="text-text-secondary mb-8">Enter your new password below.</p>
+    <div className="page-enter">
+      <h2 className="text-2xl font-bold text-text mb-1">Reset your password</h2>
+      <p className="text-sm text-text-secondary mb-8">Enter your new password below.</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <Input
@@ -45,7 +40,7 @@ const ResetPasswordPage = () => {
           error={errors.password?.message}
           {...register('password', {
             required: 'Password is required',
-            minLength: { value: 6, message: 'Password must be at least 6 characters' },
+            minLength: { value: 6, message: 'Min 6 characters' },
           })}
         />
 
@@ -61,7 +56,7 @@ const ResetPasswordPage = () => {
           })}
         />
 
-        <Button type="submit" fullWidth loading={loading}>
+        <Button type="submit" fullWidth loading={loading} size="lg">
           Reset Password
         </Button>
       </form>

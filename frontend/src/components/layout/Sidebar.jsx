@@ -56,11 +56,11 @@ const Sidebar = ({ isOpen, onClose }) => {
       >
         {/* Logo */}
         <div className="h-14 flex items-center justify-between px-4 border-b border-border shrink-0">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-white font-bold text-xs">{APP_NAME[0]}</span>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-sm shadow-primary/20">
+              <span className="text-white font-bold text-sm">{APP_NAME[0]}</span>
             </div>
-            <span className="text-sm font-semibold text-text">{APP_NAME}</span>
+            <span className="text-sm font-bold text-text">{APP_NAME}</span>
           </div>
           <button
             onClick={onClose}

@@ -34,17 +34,17 @@ const LoginPage = () => {
   return (
     <div className="page-enter">
       {/* Mobile logo */}
-      <div className="flex items-center gap-2 mb-8 lg:hidden">
-        <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-          <span className="text-white font-bold text-sm">{APP_NAME[0]}</span>
+      <div className="flex items-center gap-2.5 mb-10 lg:hidden">
+        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+          <span className="text-white font-bold text-lg">{APP_NAME[0]}</span>
         </div>
-        <span className="text-base font-semibold text-text">{APP_NAME}</span>
+        <span className="text-lg font-bold text-text">{APP_NAME}</span>
       </div>
 
-      <h2 className="text-xl font-semibold text-text tracking-tight">Welcome back</h2>
-      <p className="text-[13px] text-text-muted mt-1 mb-6">Sign in to your account to continue</p>
+      <h2 className="text-2xl font-bold text-text mb-1">Welcome back</h2>
+      <p className="text-sm text-text-secondary mb-8">Sign in to your account to continue</p>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <Input
           label="Email"
           type="email"
@@ -68,22 +68,22 @@ const LoginPage = () => {
           })}
         />
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between pt-1">
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" className="w-3.5 h-3.5 rounded border-border bg-surface text-primary accent-primary" />
-            <span className="text-xs text-text-muted">Remember me</span>
+            <input type="checkbox" className="w-4 h-4 rounded border-border bg-surface-elevated text-primary accent-primary" />
+            <span className="text-sm text-text-secondary">Remember me</span>
           </label>
-          <Link to="/forgot-password" className="text-xs text-primary hover:text-primary-light transition-colors">
+          <Link to="/forgot-password" className="text-sm text-primary hover:text-primary-light transition-colors font-medium">
             Forgot password?
           </Link>
         </div>
 
-        <Button type="submit" fullWidth loading={loading} size="md">
+        <Button type="submit" fullWidth loading={loading} size="lg">
           Sign In
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-xs text-text-muted">
+      <p className="mt-8 text-center text-sm text-text-secondary">
         Don&apos;t have an account?{' '}
         <Link to="/register" className="text-primary hover:text-primary-light transition-colors font-medium">
           Create account

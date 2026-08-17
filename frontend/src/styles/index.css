@@ -1,69 +1,53 @@
 @import "tailwindcss";
 
 @theme {
-  /* ─── Primary Palette ─── */
-  --color-primary: #4F46E5;
-  --color-primary-light: #6366F1;
-  --color-primary-dark: #4338CA;
+  /* ─── Primary ─── */
+  --color-primary: #6366F1;
+  --color-primary-light: #818CF8;
+  --color-primary-dark: #4F46E5;
   --color-primary-50: #EEF2FF;
-  --color-primary-100: #E0E7FF;
-  --color-primary-900: #312E81;
 
-  /* ─── Neutral / Surface ─── */
-  --color-background: #09090B;
-  --color-surface: #18181B;
-  --color-surface-elevated: #1F1F23;
-  --color-surface-hover: #27272A;
-  --color-border: #27272A;
-  --color-border-subtle: #1F1F23;
+  /* ─── Backgrounds ─── */
+  --color-background: #0C0C0F;
+  --color-surface: #16161A;
+  --color-surface-elevated: #1C1C21;
+  --color-surface-hover: #222228;
+
+  /* ─── Borders ─── */
+  --color-border: #2A2A30;
+  --color-border-light: #35353D;
 
   /* ─── Text ─── */
-  --color-text: #FAFAFA;
-  --color-text-secondary: #A1A1AA;
-  --color-text-muted: #71717A;
+  --color-text: #EFEFEF;
+  --color-text-secondary: #B0B0B8;
+  --color-text-muted: #6B6B76;
 
   /* ─── Semantic ─── */
-  --color-success: #10B981;
-  --color-success-light: #D1FAE5;
-  --color-warning: #F59E0B;
-  --color-warning-light: #FEF3C7;
+  --color-success: #22C55E;
+  --color-warning: #EAB308;
   --color-error: #EF4444;
-  --color-error-light: #FEE2E2;
   --color-info: #3B82F6;
-  --color-info-light: #DBEAFE;
 
   /* ─── Typography ─── */
-  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 
-  /* ─── Border Radius ─── */
-  --radius-xs: 4px;
+  /* ─── Radius ─── */
   --radius-sm: 6px;
   --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-2xl: 20px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
   --radius-full: 9999px;
-
-  /* ─── Shadows ─── */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.15);
 }
 
-/* ─── Base Reset ─── */
+/* ─── Base ─── */
 *, *::before, *::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -71,27 +55,23 @@ body {
   background-color: var(--color-background);
   color: var(--color-text);
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
 /* ─── Scrollbar ─── */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
   background: var(--color-border);
-  border-radius: 3px;
+  border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-muted);
 }
@@ -104,7 +84,7 @@ body {
 
 /* ─── Selection ─── */
 ::selection {
-  background-color: rgba(79, 70, 229, 0.3);
+  background-color: rgba(99, 102, 241, 0.3);
   color: var(--color-text);
 }
 
@@ -112,52 +92,40 @@ body {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 }
 
-/* ─── Utility Classes ─── */
+/* ─── Page Animation ─── */
 .page-enter {
-  animation: pageEnter 0.3s ease-out;
+  animation: pageIn 0.25s ease-out;
+}
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes pageEnter {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* ─── Skeleton ─── */
 .skeleton-pulse {
-  animation: pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-surface-elevated) 50%, var(--color-surface) 75%);
+  background: linear-gradient(90deg, var(--color-surface-elevated) 25%, var(--color-surface-hover) 50%, var(--color-surface-elevated) 75%);
   background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    background-position: 200% 0;
-  }
-  50% {
-    background-position: -200% 0;
-  }
-}
-
-/* ─── Dot Pattern (for auth backgrounds) ─── */
+/* ─── Dot Pattern ─── */
 .dot-pattern {
   background-image: radial-gradient(circle, var(--color-border) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-size: 20px 20px;
 }
 
 /* ─── Gradient Text ─── */
 .text-gradient {
-  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, #A78BFA 100%);
+  background: linear-gradient(135deg, #818CF8 0%, #6366F1 50%, #A78BFA 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
