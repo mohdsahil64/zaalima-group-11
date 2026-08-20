@@ -21,6 +21,7 @@ const JOB_STATUSES = [
   'closed',
   'draft',
   'paused',
+  'archived',
 ];
 
 const validateStringArray = (field, label) =>
@@ -50,11 +51,6 @@ export const createJobValidator = [
     .isLength({ max: 5000 })
     .withMessage('Description cannot exceed 5000 characters'),
 
-  body('company')
-    .trim()
-    .notEmpty()
-    .withMessage('Company name is required'),
-
   body('location')
     .trim()
     .notEmpty()
@@ -68,6 +64,18 @@ export const createJobValidator = [
     .optional()
     .isIn(EXPERIENCE_LEVELS)
     .withMessage('Invalid experience level'),
+
+  body('responsibilities')
+    .optional({ nullable: true })
+    .isString()
+    .withMessage('Responsibilities must be a string')
+    .isLength({ max: 3000 })
+    .withMessage('Responsibilities cannot exceed 3000 characters'),
+
+  body('education')
+    .optional({ nullable: true })
+    .isString()
+    .withMessage('Education must be a string'),
 
   body('salary')
     .optional()
@@ -113,12 +121,6 @@ export const updateJobValidator = [
     .isLength({ max: 5000 })
     .withMessage('Description cannot exceed 5000 characters'),
 
-  body('company')
-    .optional()
-    .trim()
-    .notEmpty()
-    .withMessage('Company name cannot be empty'),
-
   body('location')
     .optional()
     .trim()
@@ -134,6 +136,18 @@ export const updateJobValidator = [
     .optional()
     .isIn(EXPERIENCE_LEVELS)
     .withMessage('Invalid experience level'),
+
+  body('responsibilities')
+    .optional({ nullable: true })
+    .isString()
+    .withMessage('Responsibilities must be a string')
+    .isLength({ max: 3000 })
+    .withMessage('Responsibilities cannot exceed 3000 characters'),
+
+  body('education')
+    .optional({ nullable: true })
+    .isString()
+    .withMessage('Education must be a string'),
 
   body('salary')
     .optional()

@@ -21,6 +21,15 @@ export const registerValidator = [
     .optional()
     .isIn(['recruiter', 'applicant'])
     .withMessage('Role must be recruiter or applicant'),
+  body('companyName')
+    .if(body('role').equals('recruiter'))
+    .trim()
+    .notEmpty()
+    .withMessage('Company name is required for recruiters'),
+  body('companyEmail')
+    .optional()
+    .isEmail()
+    .withMessage('Valid company email is required'),
 ];
 
 export const loginValidator = [

@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import { cn } from '@/utils';
 
 const Textarea = forwardRef(
-  ({ label, error, className = '', rows = 4, id, ...props }, ref) => {
+  ({ label, error, className = '', rows = 4, id, required, ...props }, ref) => {
     const textareaId = id || label?.toLowerCase().replace(/\s+/g, '-');
 
     return (
@@ -10,9 +10,10 @@ const Textarea = forwardRef(
         {label && (
           <label
             htmlFor={textareaId}
-            className="block text-sm font-medium text-text-secondary mb-1.5"
+            className="block text-sm font-medium text-text-secondary mb-2"
           >
             {label}
+            {required && <span className="text-error ml-1">*</span>}
           </label>
         )}
         <textarea
@@ -20,16 +21,17 @@ const Textarea = forwardRef(
           id={textareaId}
           rows={rows}
           className={cn(
-            'w-full bg-surface border border-border rounded-[12px] px-4 py-2.5 text-text placeholder-text-secondary/50',
-            'focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
-            'transition-all duration-200 resize-none',
+            'w-full px-4 py-3 bg-surface-elevated border border-border rounded-lg text-sm text-text placeholder:text-text-muted',
+            'focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/60',
+            'hover:border-border-light',
+            'transition-all duration-150 resize-none',
             'disabled:opacity-50 disabled:cursor-not-allowed',
-            error && 'border-error focus:ring-error',
+            error && 'border-error/50 focus:ring-error/30 focus:border-error/60',
             className
           )}
           {...props}
         />
-        {error && <p className="mt-1.5 text-sm text-error">{error}</p>}
+        {error && <p className="mt-1.5 text-xs text-error">{error}</p>}
       </div>
     );
   }

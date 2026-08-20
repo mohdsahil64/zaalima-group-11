@@ -1,3 +1,5 @@
+import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import {
   HiBriefcase,
   HiDocumentText,
@@ -6,50 +8,101 @@ import {
   HiGift,
 } from 'react-icons/hi2';
 import { useAuth } from '@/context/AuthContext';
-import { Card, PageHeader } from '@/components/common';
-
-const stats = [
-  { label: 'Active Jobs', value: '0', icon: HiBriefcase, color: 'text-primary' },
-  { label: 'Total Applications', value: '0', icon: HiDocumentText, color: 'text-info' },
-  { label: 'Shortlisted', value: '0', icon: HiUsers, color: 'text-purple-400' },
-  { label: 'Interviews', value: '0', icon: HiCalendarDays, color: 'text-warning' },
-  { label: 'Offers', value: '0', icon: HiGift, color: 'text-success' },
-];
+import ApplicationService from '@/services/application.service';
+import JobService from '@/services/job.service';
+import { Card, PageHeader, Skeleton, Badge, Button } from '@/components/common';
 
 const RecruiterDashboard = () => {
   const { user } = useAuth();
 
+  const { data: statsData, isLoading } = useQuery({
+    queryKey: ['recruiter', 'stats'],
+    queryFn: () => ApplicationService.getRecruiterStats(),
+  });
+
+  const { data: jobsData } = useQuery({
+    queryKey: ['recruiter', 'jobs', { limit: 5 }],
+    queryFn: () => JobService.getMyJobs({ limit: 5 }),
+  });
+
+  const stats = statsData?.data?.stats || {};
+  const recentJobs = jobsData?.data || [];
+
+  const cards = [
+    { label: 'Active Jobs', value: recentJobs.filter(j => j.status === 'open').length, icon: HiBriefcase, color: 'text-primary' },
+    { label: 'Applications', value: stats.total || 0, icon: HiDocumentText, color: 'text-info' },
+    { label: 'Shortlisted', value: stats.shortlisted || 0, icon: HiUsers, color: 'text-primary-light' },
+    { label: 'Interviews', value: stats.interview || 0, icon: HiCalendarDays, color: 'text-warning' },
+    { label: 'Offers', value: stats.offered || 0, icon: HiGift, color: 'text-success' },
+  ];
+
+  if (isLoading) return <Skeleton.Dashboard />;
+
   return (
-    <div>
+    <div className="page-enter">
       <PageHeader
-        title={`Welcome back, ${user?.firstName}!`}
-        subtitle="Here's an overview of your recruitment activity"
+        title={`Welcome back, ${user?.firstName}`}
+        subtitle="Here's what's happening with your hiring"
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-        {stats.map((stat) => (
-          <Card key={stat.label} padding="md">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-text-secondary">{stat.label}</p>
-                <p className="text-2xl font-bold text-text mt-1">{stat.value}</p>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
+        {cards.map((stat) => (
+          <Card key={stat.label} padding="sm">
+            <div className="flex items-center gap-3">
+              <div className={`p-2 rounded-lg bg-surface-elevated ${stat.color}`}>
+                <stat.icon className="w-4 h-4" />
               </div>
-              <div className={`p-3 rounded-[12px] bg-surface ${stat.color}`}>
-                <stat.icon className="w-5 h-5" />
+              <div>
+                <p className="text-xl font-semibold text-text leading-none">{stat.value}</p>
+                <p className="text-[11px] text-text-muted mt-0.5">{stat.label}</p>
               </div>
             </div>
           </Card>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <h3 className="text-lg font-semibold text-text mb-4">Recent Applications</h3>
-          <p className="text-sm text-text-secondary">No applications yet</p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Card padding="sm">
+          <div className="flex items-center justify-between mb-3 px-1">
+            <h3 className="text-sm font-medium text-text">Recent Jobs</h3>
+            <Link to="/recruiter/jobs"><Button variant="ghost" size="xs">View all</Button></Link>
+          </div>
+          {recentJobs.length === 0 ? (
+            <p className="text-xs text-text-muted px-1 py-4">No jobs posted yet</p>
+          ) : (
+            <div className="space-y-1">
+              {recentJobs.slice(0, 5).map((job) => (
+                <div key={job._id} className="flex items-center justify-between px-2.5 py-2 rounded-lg hover:bg-surface-hover transition-colors">
+                  <div>
+                    <p className="text-xs font-medium text-text">{job.title}</p>
+                    <p className="text-[11px] text-text-muted">{job.totalApplications} applications</p>
+                  </div>
+                  <Badge variant={job.status === 'open' ? 'success' : 'default'} size="sm" dot>{job.status}</Badge>
+                </div>
+              ))}
+            </div>
+          )}
         </Card>
-        <Card>
-          <h3 className="text-lg font-semibold text-text mb-4">Active Job Listings</h3>
-          <p className="text-sm text-text-secondary">No active jobs</p>
+
+        <Card padding="sm">
+          <h3 className="text-sm font-medium text-text mb-3 px-1">Pipeline Summary</h3>
+          <div className="space-y-2.5 px-1">
+            {[
+              { label: 'Applied', value: stats.applied || 0, color: 'bg-info' },
+              { label: 'Shortlisted', value: stats.shortlisted || 0, color: 'bg-primary' },
+              { label: 'Interview', value: stats.interview || 0, color: 'bg-warning' },
+              { label: 'Offered', value: stats.offered || 0, color: 'bg-success' },
+              { label: 'Rejected', value: stats.rejected || 0, color: 'bg-error' },
+            ].map((item) => (
+              <div key={item.label} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className={`w-2 h-2 rounded-full ${item.color}`} />
+                  <span className="text-xs text-text-secondary">{item.label}</span>
+                </div>
+                <span className="text-xs font-medium text-text">{item.value}</span>
+              </div>
+            ))}
+          </div>
         </Card>
       </div>
     </div>

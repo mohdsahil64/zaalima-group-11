@@ -1,30 +1,49 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #4F46E5;
-  --color-primary-light: #6366F1;
-  --color-primary-dark: #4338CA;
-  --color-background: #0F172A;
-  --color-surface: #1E293B;
-  --color-border: #334155;
-  --color-text: #F8FAFC;
-  --color-text-secondary: #94A3B8;
-  --color-success: #10B981;
-  --color-warning: #F59E0B;
+  /* ─── Primary ─── */
+  --color-primary: #6366F1;
+  --color-primary-light: #818CF8;
+  --color-primary-dark: #4F46E5;
+  --color-primary-50: #EEF2FF;
+
+  /* ─── Backgrounds ─── */
+  --color-background: #0C0C0F;
+  --color-surface: #16161A;
+  --color-surface-elevated: #1C1C21;
+  --color-surface-hover: #222228;
+
+  /* ─── Borders ─── */
+  --color-border: #2A2A30;
+  --color-border-light: #35353D;
+
+  /* ─── Text ─── */
+  --color-text: #EFEFEF;
+  --color-text-secondary: #B0B0B8;
+  --color-text-muted: #6B6B76;
+
+  /* ─── Semantic ─── */
+  --color-success: #22C55E;
+  --color-warning: #EAB308;
   --color-error: #EF4444;
   --color-info: #3B82F6;
-  --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+
+  /* ─── Typography ─── */
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  /* ─── Radius ─── */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-full: 9999px;
 }
 
-/* Base styles */
-* {
+/* ─── Base ─── */
+*, *::before, *::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 html {
@@ -35,48 +54,79 @@ body {
   font-family: var(--font-family-sans);
   background-color: var(--color-background);
   color: var(--color-text);
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Scrollbar */
+/* ─── Scrollbar ─── */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
-
 ::-webkit-scrollbar-track {
-  background: var(--color-background);
+  background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
   background: var(--color-border);
-  border-radius: 3px;
+  border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-secondary);
+  background: var(--color-text-muted);
 }
 
-/* Focus styles */
+/* ─── Focus ─── */
 *:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
-/* Respect reduced motion preference */
+/* ─── Selection ─── */
+::selection {
+  background-color: rgba(99, 102, 241, 0.3);
+  color: var(--color-text);
+}
+
+/* ─── Reduced Motion ─── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 }
 
-/* Selection */
-::selection {
-  background-color: var(--color-primary);
-  color: white;
+/* ─── Page Animation ─── */
+.page-enter {
+  animation: pageIn 0.25s ease-out;
+}
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Skeleton ─── */
+.skeleton-pulse {
+  background: linear-gradient(90deg, var(--color-surface-elevated) 25%, var(--color-surface-hover) 50%, var(--color-surface-elevated) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─── Dot Pattern ─── */
+.dot-pattern {
+  background-image: radial-gradient(circle, var(--color-border) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* ─── Gradient Text ─── */
+.text-gradient {
+  background: linear-gradient(135deg, #818CF8 0%, #6366F1 50%, #A78BFA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

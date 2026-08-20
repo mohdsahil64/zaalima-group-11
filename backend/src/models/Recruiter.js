@@ -9,9 +9,9 @@ const recruiterSchema = new mongoose.Schema(
       unique: true,
     },
     company: {
-      type: String,
-      required: [true, 'Company name is required'],
-      trim: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      required: true,
     },
     position: {
       type: String,
@@ -23,29 +23,9 @@ const recruiterSchema = new mongoose.Schema(
       trim: true,
       default: null,
     },
-    companyWebsite: {
-      type: String,
-      trim: true,
-      default: null,
-    },
-    companySize: {
-      type: String,
-      enum: ['1-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
-      default: null,
-    },
-    industry: {
-      type: String,
-      trim: true,
-      default: null,
-    },
     bio: {
       type: String,
       maxlength: [500, 'Bio cannot exceed 500 characters'],
-      default: null,
-    },
-    location: {
-      type: String,
-      trim: true,
       default: null,
     },
     totalJobsPosted: {
@@ -57,6 +37,8 @@ const recruiterSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+recruiterSchema.index({ company: 1 });
 
 const Recruiter = mongoose.model('Recruiter', recruiterSchema);
 

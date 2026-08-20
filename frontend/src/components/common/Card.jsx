@@ -1,6 +1,4 @@
-import { motion } from 'framer-motion';
 import { cn } from '@/utils';
-import useReducedMotion from '@/hooks/useReducedMotion';
 
 const Card = ({
   children,
@@ -10,22 +8,20 @@ const Card = ({
   onClick,
   ...props
 }) => {
-  const prefersReducedMotion = useReducedMotion();
-
   const paddings = {
     none: '',
+    xs: 'p-3',
     sm: 'p-4',
-    md: 'p-6',
-    lg: 'p-8',
+    md: 'p-5',
+    lg: 'p-6',
   };
 
   return (
-    <motion.div
-      whileHover={hover && !prefersReducedMotion ? { y: -2, transition: { duration: 0.2 } } : {}}
+    <div
       className={cn(
-        'bg-surface border border-border rounded-[12px]',
+        'bg-surface border border-border rounded-xl',
         paddings[padding],
-        hover && 'cursor-pointer hover:border-primary/50 transition-colors duration-200',
+        hover && 'cursor-pointer hover:border-text-muted hover:bg-surface-elevated transition-all duration-200',
         onClick && 'cursor-pointer',
         className
       )}
@@ -33,7 +29,7 @@ const Card = ({
       {...props}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
 

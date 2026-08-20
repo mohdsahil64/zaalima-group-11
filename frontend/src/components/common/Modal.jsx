@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { HiXMark } from 'react-icons/hi2';
 import { cn } from '@/utils';
-import useReducedMotion from '@/hooks/useReducedMotion';
 
 const sizes = {
   sm: 'max-w-sm',
@@ -13,78 +11,51 @@ const sizes = {
 };
 
 const Modal = ({ isOpen, onClose, title, children, size = 'md', className = '' }) => {
-  const prefersReducedMotion = useReducedMotion();
-
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
+    if (isOpen) document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
   }, [isOpen]);
 
   useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
+    const handleEsc = (e) => { if (e.key === 'Escape') onClose(); };
     if (isOpen) window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
   }, [isOpen, onClose]);
 
-  const overlayAnimation = prefersReducedMotion
-    ? { initial: { opacity: 1 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
-    : { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } };
-
-  const modalAnimation = prefersReducedMotion
-    ? { initial: { opacity: 1 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
-    : {
-        initial: { opacity: 0, scale: 0.95, y: 20 },
-        animate: { opacity: 1, scale: 1, y: 0 },
-        exit: { opacity: 0, scale: 0.95, y: 20 },
-        transition: { duration: 0.2 },
-      };
+  if (!isOpen) return null;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby={title ? 'modal-title' : undefined}>
-          {/* Overlay */}
-          <motion.div
-            {...overlayAnimation}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={onClose}
-          />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-[2px] animate-in fade-in"
+        onClick={onClose}
+      />
 
-          {/* Modal */}
-          <motion.div
-            {...modalAnimation}
-            className={cn(
-              'relative w-full bg-surface border border-border rounded-[16px] shadow-2xl',
-              sizes[size],
-              className
-            )}
-          >
-            {/* Header */}
-            {title && (
-              <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-                <h2 id="modal-title" className="text-lg font-semibold text-text">{title}</h2>
-                <button
-                  onClick={onClose}
-                  className="p-1 rounded-lg text-text-secondary hover:text-text hover:bg-border transition-colors"
-                  aria-label="Close modal"
-                >
-                  <HiXMark className="w-5 h-5" />
-                </button>
-              </div>
-            )}
-
-            {/* Body */}
-            <div className="px-6 py-4">{children}</div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
+      {/* Panel */}
+      <div
+        className={cn(
+          'relative w-full bg-surface border border-border rounded-xl shadow-xl',
+          'animate-in fade-in zoom-in-95 duration-200',
+          sizes[size],
+          className
+        )}
+      >
+        {title && (
+          <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+            <h2 className="text-sm font-semibold text-text">{title}</h2>
+            <button
+              onClick={onClose}
+              className="p-1 rounded-md text-text-muted hover:text-text hover:bg-surface-hover transition-colors"
+              aria-label="Close"
+            >
+              <HiXMark className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+        <div className="px-5 py-4">{children}</div>
+      </div>
+    </div>
   );
 };
 
