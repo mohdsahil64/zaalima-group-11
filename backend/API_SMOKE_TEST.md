@@ -44,5 +44,17 @@ The core ATS workflow was tested successfully:
 
 
 
-`Recruiter creates job → Applicant applies → Recruiter manages application`
+`Recruiter creates job → Applicant applies → Recruiter manages application` 
+
+## Additional Verification — 30 August 2026
+
+- Applicant profile update checked.
+- Resume upload checked.
+- Published job visibility checked.
+- Applicant application history checked.
+- Duplicate application protection checked.
+- Recruiter job update checked.
+- Recruiter application status update checked.
+- Application pipeline movement checked.
+- Recruiter dashboard statistics checked.
 
