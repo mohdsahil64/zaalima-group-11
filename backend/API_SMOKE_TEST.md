@@ -58,3 +58,21 @@ The core ATS workflow was tested successfully:
 - Application pipeline movement checked.
 - Recruiter dashboard statistics checked.
 
+Backend Applicant & Recruiter Flow Test
+Date: 31 August 2026
+
+Verified
+
+Applicant profile can be accessed.
+Applicant resume upload works.
+Applicant application history is displayed.
+Duplicate application is rejected.
+Recruiter can view own jobs.
+Recruiter can view applications.
+Recruiter can update application status.
+Pipeline reflects the updated application status.
+
+Result
+
+Applicant and recruiter flows were tested successfully, including
+duplicate-application protection and application status movement.
