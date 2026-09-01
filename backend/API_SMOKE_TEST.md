@@ -76,3 +76,35 @@ Result
 
 Applicant and recruiter flows were tested successfully, including
 duplicate-application protection and application status movement.
+
+## 1 September 2026 — Permission and Error Testing
+
+### Verified
+
+Logged-out users cannot access the recruiter jobs page directly.
+
+Direct access to `/recruiter/jobs` redirects to the Login page.
+
+Applicant users cannot access recruiter pages.
+
+Duplicate application submission is rejected successfully.
+
+A duplicate application does not create a second application.
+
+Recruiter can change the `Backend Test Developer` job status to `Closed`.
+
+Closed jobs do not appear in the applicant's Browse Jobs page.
+
+Recruiter can change the job status back to `Open (Published)`.
+
+The job is available again after being published.
+
+### Result
+
+Role-based access control and application validation were tested successfully.
+
+The tested flow was:
+
+Logout → Direct recruiter URL → Login protection → Applicant permission check → Duplicate application validation → Close job → Verify job is hidden → Re-publish job
+
+All tested permission and validation scenarios passed successfully.
