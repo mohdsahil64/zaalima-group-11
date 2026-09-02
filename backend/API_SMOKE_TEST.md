@@ -108,3 +108,49 @@ The tested flow was:
 Logout → Direct recruiter URL → Login protection → Applicant permission check → Duplicate application validation → Close job → Verify job is hidden → Re-publish job
 
 All tested permission and validation scenarios passed successfully.
+
+## How to Test
+
+### Start Backend
+
+From the project root:
+
+cd backend
+npm install
+npm run dev
+
+Backend API:
+http://localhost:5000/api/v1
+
+### Start Frontend
+
+Open another terminal:
+
+cd frontend
+npm install
+npm run dev
+
+Frontend:
+http://localhost:5173
+
+### Test Main Flows
+
+Applicant:
+- Login
+- Browse published jobs
+- Apply for a job
+- Check application history
+
+Recruiter:
+- Login
+- View own jobs
+- Create and publish a job
+- View applications
+- Update application status
+- Check candidate pipeline
+
+Admin:
+- Login
+- Check users, jobs, and applications
+- Verify role-based permissions
+- Test admin-only actions
