@@ -6,7 +6,7 @@ import ApiError from '../utils/ApiError.js';
 import { generateToken, hashToken } from '../utils/helpers.js';
 
 class AuthService {
-  async register({ firstName, lastName, email, password, role, companyName, companyEmail }) {
+  async register({ firstName, lastName, email, password, role, companyName, companyEmail, companyLocation, companyWebsite, industry, companySize, recruiterTitle, phone, jobTitle, experienceLevel, skillsRaw, linkedin, portfolio, location }) {
     // Check if user exists
     const existingUser = await User.findOne({ email }).lean();
     if (existingUser) {
@@ -19,6 +19,7 @@ class AuthService {
       lastName,
       email,
       password,
+      phone: phone || null,
       role: role || 'applicant',
     });
 
@@ -28,6 +29,10 @@ class AuthService {
       const company = await Company.create({
         name: companyName || `${firstName}'s Company`,
         email: companyEmail || email,
+        website: companyWebsite || null,
+        industry: industry || null,
+        size: companySize || null,
+        location: companyLocation || null,
         owner: user._id,
         status: 'pending',
       });
@@ -35,10 +40,22 @@ class AuthService {
       await Recruiter.create({
         user: user._id,
         company: company._id,
+        title: recruiterTitle || null,
       });
     } else if (user.role === 'applicant') {
+      // Parse skills from comma-separated string if provided
+      const skills = skillsRaw
+        ? skillsRaw.split(',').map(s => s.trim()).filter(Boolean)
+        : [];
+
       await Applicant.create({
         user: user._id,
+        headline: jobTitle || null,
+        experienceLevel: experienceLevel || null,
+        skills,
+        linkedin: linkedin || null,
+        portfolio: portfolio || null,
+        location: location || null,
       });
     }
 
