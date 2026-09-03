@@ -6,6 +6,9 @@ const Card = ({
   hover = false,
   padding = 'md',
   onClick,
+  glass = false,
+  glow = false,
+  shimmer = false,
   ...props
 }) => {
   const paddings = {
@@ -14,14 +17,21 @@ const Card = ({
     sm: 'p-4',
     md: 'p-5',
     lg: 'p-6',
+    xl: 'p-8',
   };
 
   return (
     <div
       className={cn(
-        'bg-surface border border-border rounded-xl',
+        'rounded-xl border transition-all duration-200',
+        glass
+          ? 'glass'
+          : 'bg-surface border-border',
+        glow && 'border-glow',
         paddings[padding],
-        hover && 'cursor-pointer hover:border-text-muted hover:bg-surface-elevated transition-all duration-200',
+        hover &&
+          'cursor-pointer hover:border-border-light hover:bg-surface-elevated hover:shadow-card-hover hover:-translate-y-px',
+        shimmer && 'card-shimmer',
         onClick && 'cursor-pointer',
         className
       )}
