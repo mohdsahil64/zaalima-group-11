@@ -8,18 +8,18 @@ import asyncHandler from '../utils/asyncHandler.js';
  * @access  Private
  */
 export const getProfile = asyncHandler(async (req, res) => {
-  const user = await userService.getProfile(req.user._id);
-  ApiResponse.success(res, { user }, 'Profile retrieved successfully');
+  const { user, applicantProfile } = await userService.getProfile(req.user._id);
+  ApiResponse.success(res, { user, applicantProfile }, 'Profile retrieved successfully');
 });
 
 /**
- * @desc    Update user profile
+ * @desc    Update user profile (User fields + Applicant fields if role is applicant)
  * @route   PUT /api/v1/users/me
  * @access  Private
  */
 export const updateProfile = asyncHandler(async (req, res) => {
-  const user = await userService.updateProfile(req.user._id, req.body);
-  ApiResponse.success(res, { user }, 'Profile updated successfully');
+  const { user, applicantProfile } = await userService.updateProfile(req.user._id, req.body);
+  ApiResponse.success(res, { user, applicantProfile }, 'Profile updated successfully');
 });
 
 /**
