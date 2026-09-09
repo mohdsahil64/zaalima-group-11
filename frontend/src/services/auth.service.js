@@ -7,6 +7,8 @@ const AuthService = {
   forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
   resetPassword: (token, password) => api.put(`/auth/reset-password/${token}`, { password }),
   getMe: () => api.get('/auth/me'),
+  // Fetch current user using an explicit token (used when verifying a stored portal session)
+  getMeWithToken: (token) => api.get('/auth/me', { __authToken: token }),
 };
 
 export default AuthService;
