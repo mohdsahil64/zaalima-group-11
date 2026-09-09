@@ -9,8 +9,19 @@ import {
   HiCog6Tooth,
   HiSparkles,
   HiCheckCircle,
+  HiArrowsRightLeft,
+  HiPlus,
+  HiBuildingOffice2,
+  HiShieldCheck,
+  HiBriefcase,
 } from 'react-icons/hi2';
 import { useAuth } from '@/context/AuthContext';
+
+const PORTAL_META = {
+  admin:     { label: 'Admin Portal',     icon: HiShieldCheck,    color: 'text-warning', bg: 'bg-warning/10' },
+  recruiter: { label: 'Recruiter Portal', icon: HiBuildingOffice2, color: 'text-primary', bg: 'bg-primary/10' },
+  applicant: { label: 'Applicant Portal', icon: HiBriefcase,      color: 'text-success', bg: 'bg-success/10' },
+};
 
 const mockNotifications = [
   { id: 1, text: 'New application for Senior Developer', time: '2m ago', unread: true, type: 'application' },
@@ -40,13 +51,19 @@ const getPageTitle = (pathname) => {
 };
 
 const Navbar = ({ onMenuClick }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, activePortal, getActivePortals, portalDashboard } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [showNotifs, setShowNotifs] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [showSwitcher, setShowSwitcher] = useState(false);
   const notifsRef = useRef(null);
   const profileRef = useRef(null);
+  const switcherRef = useRef(null);
+
+  // All portals currently logged in (excluding the one we're viewing)
+  const activePortals = getActivePortals();
+  const otherPortals = activePortals.filter((p) => p.portal !== activePortal);
 
   const unreadCount = mockNotifications.filter((n) => n.unread).length;
   const pageTitle = getPageTitle(location.pathname);
@@ -57,6 +74,7 @@ const Navbar = ({ onMenuClick }) => {
     const handler = (e) => {
       if (notifsRef.current && !notifsRef.current.contains(e.target)) setShowNotifs(false);
       if (profileRef.current && !profileRef.current.contains(e.target)) setShowProfile(false);
+      if (switcherRef.current && !switcherRef.current.contains(e.target)) setShowSwitcher(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
@@ -66,6 +84,7 @@ const Navbar = ({ onMenuClick }) => {
   useEffect(() => {
     setShowNotifs(false);
     setShowProfile(false);
+    setShowSwitcher(false);
   }, [location.pathname]);
 
   const handleLogout = async () => {
@@ -98,6 +117,90 @@ const Navbar = ({ onMenuClick }) => {
 
         {/* Right */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+
+          {/* Portal Switcher */}
+          <div ref={switcherRef} className="relative">
+            <button
+              onClick={() => { setShowSwitcher((s) => !s); setShowNotifs(false); setShowProfile(false); }}
+              className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-text-muted hover:text-text hover:bg-surface-hover transition-colors"
+              aria-label="Switch portal"
+              title="Switch portal"
+            >
+              <HiArrowsRightLeft className="w-4 h-4" />
+              {activePortals.length > 1 && (
+                <span className="hidden sm:flex w-4 h-4 rounded-full bg-primary text-white text-[10px] font-bold items-center justify-center">
+                  {activePortals.length}
+                </span>
+              )}
+            </button>
+
+            {showSwitcher && (
+              <div className="absolute right-0 top-full mt-2 w-64 bg-surface-elevated border border-border rounded-2xl shadow-xl overflow-hidden animate-fade-down z-50">
+                <div className="px-4 py-3 border-b border-border">
+                  <h3 className="text-sm font-semibold text-text">Switch Portal</h3>
+                  <p className="text-[11px] text-text-muted mt-0.5">Stay logged into all portals at once</p>
+                </div>
+
+                <div className="py-1.5">
+                  {/* Current portal */}
+                  {activePortal && PORTAL_META[activePortal] && (
+                    <div className="flex items-center gap-3 px-4 py-2.5 bg-primary/5">
+                      {(() => { const Icon = PORTAL_META[activePortal].icon; return (
+                        <div className={`w-8 h-8 rounded-lg ${PORTAL_META[activePortal].bg} flex items-center justify-center shrink-0`}>
+                          <Icon className={`w-4 h-4 ${PORTAL_META[activePortal].color}`} />
+                        </div>
+                      ); })()}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-text truncate">{PORTAL_META[activePortal].label}</p>
+                        <p className="text-[11px] text-text-muted truncate">
+                          {user ? `${user.firstName} ${user.lastName}` : 'Active now'}
+                        </p>
+                      </div>
+                      <HiCheckCircle className="w-4 h-4 text-primary shrink-0" />
+                    </div>
+                  )}
+
+                  {/* Other logged-in portals */}
+                  {otherPortals.map(({ portal, user: pUser }) => {
+                    const meta = PORTAL_META[portal];
+                    if (!meta) return null;
+                    const Icon = meta.icon;
+                    return (
+                      <button
+                        key={portal}
+                        onClick={() => { setShowSwitcher(false); navigate(portalDashboard(portal)); }}
+                        className="flex items-center gap-3 w-full px-4 py-2.5 hover:bg-surface-hover transition-colors text-left"
+                      >
+                        <div className={`w-8 h-8 rounded-lg ${meta.bg} flex items-center justify-center shrink-0`}>
+                          <Icon className={`w-4 h-4 ${meta.color}`} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-text truncate">{meta.label}</p>
+                          <p className="text-[11px] text-text-muted truncate">
+                            {pUser ? `${pUser.firstName} ${pUser.lastName}` : 'Logged in'}
+                          </p>
+                        </div>
+                        <HiArrowsRightLeft className="w-3.5 h-3.5 text-text-muted shrink-0" />
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Add another portal */}
+                <div className="border-t border-border py-1.5">
+                  <button
+                    onClick={() => { setShowSwitcher(false); navigate('/login'); }}
+                    className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-primary hover:bg-primary/10 transition-colors"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <HiPlus className="w-4 h-4 text-primary" />
+                    </div>
+                    Log into another portal
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Notifications */}
           <div ref={notifsRef} className="relative">

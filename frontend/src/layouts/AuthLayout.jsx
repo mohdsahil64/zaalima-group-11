@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Loader } from '@/components/common';
 import { APP_NAME } from '@/constants';
@@ -40,18 +40,11 @@ const stats = [
 ];
 
 const AuthLayout = () => {
-  const { isAuthenticated, loading, user } = useAuth();
+  const { loading } = useAuth();
 
+  // Login/register are always accessible so a user can add another portal
+  // session (e.g. already logged in as applicant, now logging in as admin).
   if (loading) return <Loader fullScreen />;
-
-  if (isAuthenticated) {
-    const roleRoutes = {
-      recruiter: '/recruiter/dashboard',
-      applicant: '/applicant/dashboard',
-      super_admin: '/admin/dashboard',
-    };
-    return <Navigate to={roleRoutes[user?.role] || '/'} replace />;
-  }
 
   return (
     <div className="min-h-screen bg-background flex overflow-hidden">
